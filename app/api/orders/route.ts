@@ -128,19 +128,23 @@ export async function POST(request: NextRequest) {
         }
 
         // Create order items
-        const orderItems = cartItems.map(item => ({
-            order_id: order.id,
-            product_id: item.product_id,
-            quantity: item.quantity,
-            unit_price: item.price_snapshot,
-            product_snapshot: {
-                title: item.products?.title,
-                sku: item.products?.sku,
-                condition_grade: item.products?.condition_grade,
-                warranty_months: item.products?.warranty_months,
-                images: item.products?.product_images
+        const orderItems = cartItems.map(item => {
+            // products could be an array or object depending on Supabase query
+            const product = Array.isArray(item.products) ? item.products[0] : item.products
+            return {
+                order_id: order.id,
+                product_id: item.product_id,
+                quantity: item.quantity,
+                unit_price: item.price_snapshot,
+                product_snapshot: {
+                    title: product?.title,
+                    sku: product?.sku,
+                    condition_grade: product?.condition_grade,
+                    warranty_months: product?.warranty_months,
+                    images: product?.product_images
+                }
             }
-        }))
+        })
 
         const { error: itemsError } = await supabase
             .from('order_items')
