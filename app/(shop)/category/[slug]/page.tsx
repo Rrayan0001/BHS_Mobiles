@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 import ProductCard from '@/components/product/ProductCard'
 import Button from '@/components/ui/Button'
 import styles from './page.module.css'
 
-export default function CategoryPage() {
+function CategoryContent() {
     const params = useParams()
     const searchParams = useSearchParams()
     const slug = params.slug as string
@@ -164,5 +164,13 @@ export default function CategoryPage() {
                 </div>
             </div>
         </div>
+    )
+}
+
+export default function CategoryPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <CategoryContent />
+        </Suspense>
     )
 }
