@@ -1,0 +1,233 @@
+.footer {
+    background-color: #0b0f19;
+    /* Deep dark background */
+    color: #ffffff;
+    padding: var(--spacing-12) 0 var(--spacing-6);
+    font-family: var(--font-sans);
+}
+
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-8);
+    padding-bottom: var(--spacing-6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ownerInfo {
+    font-size: 0.9rem;
+    color: #a0aec0;
+    font-weight: 500;
+}
+
+.footerGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-8);
+}
+
+/* Card Styling */
+.footerCard {
+    background-color: #151b2b;
+    /* Slightly lighter dark card */
+    border-radius: 20px;
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    height: 100%;
+}
+
+.cardTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: var(--spacing-2);
+    display: inline-block;
+    color: #fff;
+}
+
+/* Column 1: Contact */
+.contactInfo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+    font-size: 0.9rem;
+    color: #cbd5e0;
+}
+
+.infoRow {
+    line-height: 1.5;
+}
+
+.label {
+    font-weight: 600;
+    color: #fff;
+    margin-right: 4px;
+}
+
+.callbackBtn {
+    margin-top: auto;
+    background-color: #3182ce;
+    /* Blue button */
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+    width: 100%;
+}
+
+.callbackBtn:hover {
+    background-color: #2b6cb0;
+}
+
+/* Column 2: Links */
+.linkList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+}
+
+.footerLink {
+    color: #a0aec0;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+    display: block;
+}
+
+.footerLink:hover {
+    color: #3182ce;
+    padding-left: 4px;
+    /* Slide effect */
+}
+
+/* Column 3: Map */
+.mapLink {
+    display: block;
+    width: 100%;
+    height: 150px;
+    background-color: #2d3748;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.mapPlaceholder {
+    width: 100%;
+    height: 100%;
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Map_symbol.svg/100px-Map_symbol.svg.png");
+    /* Generic map icon fallback or explicit image */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    /* In a real app, use a real static map image or iframe */
+    background: #2d3748;
+    /* Fallback */
+}
+
+.mapText {
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* Column 4: Payments */
+.paymentSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+}
+
+.paymentIcons {
+    display: flex;
+    gap: var(--spacing-2);
+    flex-wrap: wrap;
+}
+
+.paymentIcon {
+    width: 50px;
+    height: 32px;
+    background: #fff;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+/* Bottom Bar */
+.bottomBar {
+    margin-top: var(--spacing-8);
+    padding-top: var(--spacing-6);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    /* Separator line */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.copyright {
+    color: #718096;
+    font-size: 0.85rem;
+}
+
+.socialLinks {
+    display: flex;
+    gap: var(--spacing-4);
+}
+
+.socialIcon {
+    color: #a0aec0;
+    font-size: 1.2rem;
+    transition: color 0.2s;
+}
+
+.socialIcon:hover {
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .footerGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .footerGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .topBar {
+        flex-direction: column;
+        gap: var(--spacing-4);
+        text-align: center;
+    }
+
+    .bottomBar {
+        flex-direction: column;
+        gap: var(--spacing-4);
+    }
+}

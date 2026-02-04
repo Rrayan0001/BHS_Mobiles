@@ -1,0 +1,154 @@
+.page {
+    padding-bottom: var(--spacing-16);
+}
+
+.hero {
+    background: var(--color-neutral-900);
+    color: var(--color-white);
+    padding: var(--spacing-16) 0;
+    text-align: center;
+    margin-bottom: var(--spacing-12);
+}
+
+.title {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-extrabold);
+    margin-bottom: var(--spacing-4);
+}
+
+.subtitle {
+    font-size: var(--font-size-xl);
+    color: var(--color-neutral-400);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-8);
+    align-items: start;
+}
+
+.infoColumn {
+    display: flex;
+    flex-direction: column;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-6);
+}
+
+.infoCard {
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-4);
+}
+
+.infoCard h3 {
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-2);
+    color: var(--color-neutral-900);
+}
+
+.infoCard p {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-neutral-800);
+    margin-bottom: var(--spacing-1);
+}
+
+.infoCard .subText {
+    font-size: var(--font-size-xs);
+    color: var(--color-neutral-500);
+    font-weight: var(--font-weight-normal);
+}
+
+.formColumn {
+    position: sticky;
+    top: var(--spacing-8);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-5);
+}
+
+.formTitle {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-4);
+    color: var(--color-neutral-900);
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+}
+
+.formGroup label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-neutral-700);
+}
+
+.textarea {
+    width: 100%;
+    padding: var(--spacing-3);
+    border: 1px solid var(--color-neutral-300);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: var(--font-size-base);
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.successMessage {
+    text-align: center;
+    padding: var(--spacing-10);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-4);
+}
+
+.successIcon {
+    font-size: 4rem;
+    margin-bottom: var(--spacing-4);
+}
+
+.successMessage h3 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-success);
+}
+
+.successMessage p {
+    color: var(--color-neutral-600);
+    margin-bottom: var(--spacing-6);
+}
+
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .infoGrid {
+        grid-template-columns: 1fr;
+    }
+}

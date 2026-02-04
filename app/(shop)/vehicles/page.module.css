@@ -1,0 +1,239 @@
+.page {
+    padding-bottom: var(--spacing-16);
+    min-height: 80vh;
+}
+
+.hero {
+    background: var(--color-neutral-900);
+    color: var(--color-white);
+    padding: var(--spacing-16) 0;
+    margin-bottom: var(--spacing-8);
+    text-align: center;
+}
+
+.heroTitle {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-extrabold);
+    margin-bottom: var(--spacing-4);
+}
+
+.heroSubtitle {
+    font-size: var(--font-size-xl);
+    color: var(--color-neutral-400);
+}
+
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-8);
+    flex-wrap: wrap;
+}
+
+.filterSelect {
+    padding: var(--spacing-3) var(--spacing-6);
+    border: 1px solid var(--color-neutral-200);
+    border-radius: var(--radius-full);
+    background: var(--color-white);
+    font-size: var(--font-size-base);
+    min-width: 150px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filterSelect:hover {
+    border-color: var(--color-primary);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--spacing-8);
+}
+
+.vehicleCard {
+    transition: transform var(--transition-fast);
+    overflow: hidden;
+}
+
+.vehicleCard:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.imageWrapper {
+    height: 200px;
+    background: var(--color-neutral-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.imagePlaceholder {
+    font-size: 5rem;
+    opacity: 0.5;
+}
+
+.priceTag {
+    position: absolute;
+    bottom: var(--spacing-4);
+    right: var(--spacing-4);
+    background: var(--color-neutral-900);
+    color: var(--color-white);
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-full);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-lg);
+}
+
+.content {
+    padding: var(--spacing-5);
+}
+
+.vehicleTitle {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-4);
+    color: var(--color-neutral-900);
+}
+
+.specsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-4);
+}
+
+.specItem {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-700);
+    background: var(--color-neutral-50);
+    padding: var(--spacing-2);
+    border-radius: var(--radius-md);
+}
+
+.specIcon {
+    font-size: var(--font-size-base);
+}
+
+.location {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-500);
+    margin-bottom: var(--spacing-4);
+}
+
+.actions {
+    display: flex;
+    gap: var(--spacing-3);
+}
+
+/* Modal */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--spacing-4);
+}
+
+.modal {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    width: 100%;
+    max-width: 500px;
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-xl);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-6);
+}
+
+.modalHeader h3 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    font-size: var(--font-size-xl);
+    cursor: pointer;
+    color: var(--color-neutral-500);
+}
+
+.inquiryForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+}
+
+.formGroup label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-neutral-700);
+}
+
+.input,
+.textarea {
+    width: 100%;
+    padding: var(--spacing-3);
+    border: 1px solid var(--color-neutral-300);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: var(--font-size-base);
+}
+
+.input:focus,
+.textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+@media (max-width: 768px) {
+    .heroTitle {
+        font-size: var(--font-size-3xl);
+    }
+
+    .specsGrid {
+        grid-template-columns: 1fr;
+    }
+}

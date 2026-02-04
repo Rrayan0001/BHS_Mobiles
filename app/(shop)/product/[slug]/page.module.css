@@ -1,0 +1,376 @@
+.page {
+    min-height: 100vh;
+    padding: var(--spacing-8) 0;
+    background: var(--color-neutral-50);
+}
+
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-600);
+    margin-bottom: var(--spacing-6);
+}
+
+.breadcrumbs a {
+    color: var(--color-neutral-600);
+    transition: color var(--transition-fast);
+}
+
+.breadcrumbs a:hover {
+    color: var(--color-primary);
+}
+
+.breadcrumbs span:last-child {
+    color: var(--color-neutral-900);
+    font-weight: var(--font-weight-medium);
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-12);
+    margin-bottom: var(--spacing-12);
+}
+
+.gallery {
+    position: sticky;
+    top: calc(var(--spacing-20) + 60px);
+    height: fit-content;
+}
+
+.mainImage {
+    position: relative;
+    background: var(--color-white);
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    margin-bottom: var(--spacing-4);
+    box-shadow: var(--shadow-md);
+}
+
+.imageWrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+}
+
+.imagePlaceholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-neutral-100) 0%, var(--color-neutral-200) 100%);
+    gap: var(--spacing-4);
+}
+
+.placeholderIcon {
+    font-size: 6rem;
+    opacity: 0.3;
+}
+
+.placeholderText {
+    font-size: var(--font-size-lg);
+    color: var(--color-neutral-400);
+    font-weight: var(--font-weight-medium);
+}
+
+.discountBadge {
+    position: absolute;
+    top: var(--spacing-4);
+    right: var(--spacing-4);
+    background: var(--color-accent);
+    color: var(--color-white);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    padding: var(--spacing-3) var(--spacing-5);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.thumbnails {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: var(--spacing-3);
+}
+
+.thumbnail {
+    position: relative;
+    padding-top: 100%;
+    background: var(--color-white);
+    border: 2px solid var(--color-neutral-200);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    overflow: hidden;
+}
+
+.thumbnail:hover {
+    border-color: var(--color-primary);
+    transform: scale(1.05);
+}
+
+.thumbnailActive {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-light);
+}
+
+.thumbnailPlaceholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-neutral-100);
+    font-size: var(--font-size-2xl);
+    opacity: 0.5;
+}
+
+.details {
+    background: var(--color-white);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-8);
+    box-shadow: var(--shadow-md);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-4);
+    gap: var(--spacing-4);
+}
+
+.badges {
+    display: flex;
+    gap: var(--spacing-2);
+    flex-wrap: wrap;
+}
+
+.lowStock {
+    font-size: var(--font-size-sm);
+    color: var(--color-warning);
+    font-weight: var(--font-weight-semibold);
+    background: var(--color-warning-light);
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-full);
+}
+
+.title {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-extrabold);
+    color: var(--color-neutral-900);
+    margin-bottom: var(--spacing-6);
+    line-height: var(--line-height-tight);
+}
+
+.pricing {
+    margin-bottom: var(--spacing-6);
+    padding-bottom: var(--spacing-6);
+    border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.priceWrapper {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-2);
+}
+
+.price {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-extrabold);
+    color: var(--color-primary);
+    font-family: var(--font-display);
+}
+
+.comparePrice {
+    font-size: var(--font-size-xl);
+    color: var(--color-neutral-400);
+    text-decoration: line-through;
+}
+
+.savings {
+    font-size: var(--font-size-base);
+    color: var(--color-success);
+    font-weight: var(--font-weight-semibold);
+}
+
+.description {
+    font-size: var(--font-size-lg);
+    color: var(--color-neutral-700);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--spacing-6);
+}
+
+.conditionSection {
+    margin-bottom: var(--spacing-6);
+}
+
+.actions {
+    margin-bottom: var(--spacing-8);
+    padding-bottom: var(--spacing-8);
+    border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.quantitySelector {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
+}
+
+.quantitySelector label {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-neutral-700);
+}
+
+.quantityControls {
+    display: flex;
+    align-items: center;
+    border: 2px solid var(--color-neutral-300);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.quantityControls button {
+    width: 40px;
+    height: 40px;
+    background: var(--color-neutral-100);
+    border: none;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.quantityControls button:hover:not(:disabled) {
+    background: var(--color-neutral-200);
+}
+
+.quantityControls button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.quantityControls input {
+    width: 60px;
+    height: 40px;
+    border: none;
+    text-align: center;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-base);
+}
+
+.buttons {
+    display: flex;
+    gap: var(--spacing-3);
+}
+
+.trustSignals {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+}
+
+.trustItem {
+    display: flex;
+    gap: var(--spacing-3);
+    align-items: flex-start;
+}
+
+.trustIcon {
+    font-size: var(--font-size-2xl);
+    flex-shrink: 0;
+}
+
+.trustItem strong {
+    display: block;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-neutral-900);
+    margin-bottom: var(--spacing-1);
+}
+
+.trustItem p {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-600);
+    margin: 0;
+}
+
+.specifications {
+    background: var(--color-white);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-8);
+    box-shadow: var(--shadow-md);
+}
+
+.specifications h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-6);
+}
+
+.specsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-4);
+}
+
+.specItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-4);
+    background: var(--color-neutral-50);
+    border-radius: var(--radius-lg);
+}
+
+.specLabel {
+    font-size: var(--font-size-sm);
+    color: var(--color-neutral-600);
+    font-weight: var(--font-weight-medium);
+}
+
+.specValue {
+    font-size: var(--font-size-base);
+    color: var(--color-neutral-900);
+    font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 1024px) {
+    .layout {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-8);
+    }
+
+    .gallery {
+        position: relative;
+        top: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: var(--font-size-2xl);
+    }
+
+    .price {
+        font-size: var(--font-size-3xl);
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+
+    .specsGrid {
+        grid-template-columns: 1fr;
+    }
+}

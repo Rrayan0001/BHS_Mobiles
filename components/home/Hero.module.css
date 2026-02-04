@@ -1,0 +1,154 @@
+.hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* Vibrant purple-blue gradient */
+    padding: 4rem 0 2rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.heroContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-8);
+    min-height: 400px;
+}
+
+.textContent {
+    flex: 1;
+    max-width: 50%;
+    z-index: 10;
+}
+
+.heroTitle {
+    font-family: var(--font-serif);
+    font-size: 3.5rem;
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: var(--spacing-4);
+    color: #ffffff;
+    /* White for gradient bg */
+}
+
+.italic {
+    font-style: italic;
+    font-family: var(--font-serif);
+}
+
+.heroSubtitle {
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-8);
+    color: #ffffff;
+    /* White for gradient bg */
+    max-width: 400px;
+}
+
+.heroBtn {
+    display: inline-block;
+    background-color: #ffffff;
+    /* White button on gradient */
+    color: #667eea;
+    /* Gradient color for text */
+    padding: 12px 32px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: transform 0.2s;
+    border: 2px solid transparent;
+}
+
+.heroBtn:hover {
+    transform: translateY(-2px);
+}
+
+.imageContent {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+}
+
+.phonesWrapper {
+    display: flex;
+    gap: 10px;
+    transform: perspective(1000px) rotateY(-10deg) rotateX(5deg);
+    /* Slight 3D skew */
+}
+
+/* CSS Phones */
+.phone {
+    width: 100px;
+    height: 200px;
+    background-color: var(--color);
+    border: 4px solid #1a1a1a;
+    border-radius: 16px;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s;
+}
+
+.phone::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 8px;
+    background: #000;
+    border-radius: 10px;
+}
+
+.phone:nth-child(2) {
+    margin-top: 20px;
+}
+
+.phone:nth-child(3) {
+    margin-top: 40px;
+}
+
+.phone:nth-child(4) {
+    margin-top: 20px;
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 3rem;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.dot.active {
+    background-color: var(--color-secondary);
+}
+
+@media (max-width: 768px) {
+    .heroContent {
+        flex-direction: column;
+        text-align: center;
+        padding-bottom: 2rem;
+    }
+
+    .textContent {
+        max-width: 100%;
+    }
+
+    .imageContent {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .heroTitle {
+        font-size: 2.5rem;
+    }
+}

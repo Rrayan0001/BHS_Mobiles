@@ -1,0 +1,83 @@
+'use client'
+
+import React from 'react'
+import { useCart } from '@/contexts/CartContext'
+import styles from './android.module.css'
+
+const androidPhones = [
+    { id: 'an1', name: 'Samsung S24 Ultra - 256GB', price: 84999, oldPrice: 109999, image: '📱', variant: '256GB' },
+    { id: 'an2', name: 'Samsung S24 Ultra - 512GB', price: 94999, oldPrice: 119999, image: '📱', variant: '512GB' },
+    { id: 'an3', name: 'Samsung S23 Ultra - 256GB', price: 74999, oldPrice: 99999, image: '📱', variant: '256GB' },
+    { id: 'an4', name: 'Google Pixel 8 Pro - 256GB', price: 69999, oldPrice: 89999, image: '📱', variant: '256GB' },
+    { id: 'an5', name: 'Samsung S24 - 128GB', price: 54999, oldPrice: 74999, image: '📱', variant: '128GB' },
+    { id: 'an6', name: 'Google Pixel 8 - 128GB', price: 49999, oldPrice: 69999, image: '📱', variant: '128GB' },
+    { id: 'an7', name: 'Samsung S23 FE - 256GB', price: 44999, oldPrice: 59999, image: '📱', variant: '256GB' },
+    { id: 'an8', name: 'Google Pixel 7 Pro - 256GB', price: 54999, oldPrice: 74999, image: '📱', variant: '256GB' },
+]
+
+export default function AndroidPage() {
+    const { addItem } = useCart()
+
+    const handleAddToCart = (product: typeof androidPhones[0]) => {
+        addItem({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            variant: product.variant
+        })
+    }
+
+    return (
+        <div className={styles.page}>
+            <div className={styles.banner}>
+                <div className="container">
+                    <h1 className={styles.bannerTitle}>Android</h1>
+                    <p className={styles.bannerSubtitle}>Premium Android smartphones</p>
+                </div>
+            </div>
+
+            <div className={styles.filtersSection}>
+                <div className="container">
+                    <div className={styles.filtersBar}>
+                        <div className={styles.filterChip}>Android</div>
+                        <div className={styles.sortBy}>
+                            <label>Sort by:</label>
+                            <select className={styles.select}>
+                                <option>Price: Low to High</option>
+                                <option>Price: High to Low</option>
+                                <option>Newest First</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="container">
+                <div className={styles.productsGrid}>
+                    {androidPhones.map((product) => (
+                        <div key={product.id} className={styles.productCard}>
+                            <div className={styles.wishlistIcon}>♡</div>
+                            <div className={styles.productImage}>
+                                <span style={{ fontSize: '4rem' }}>{product.image}</span>
+                            </div>
+                            <div className={styles.productInfo}>
+                                <h3 className={styles.productName}>{product.name}</h3>
+                                <div className={styles.priceRow}>
+                                    <span className={styles.currentPrice}>Rs. {product.price.toLocaleString()}</span>
+                                    <span className={styles.oldPrice}>₹{product.oldPrice.toLocaleString()}</span>
+                                </div>
+                                <button
+                                    className={styles.addToCartBtn}
+                                    onClick={() => handleAddToCart(product)}
+                                >
+                                    🛒 Add to cart
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    )
+}

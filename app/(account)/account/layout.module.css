@@ -1,0 +1,120 @@
+.layout {
+    padding: var(--spacing-8) 0;
+    background: #f8f9fa;
+    min-height: 80vh;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: var(--spacing-8);
+}
+
+.sidebar {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: var(--spacing-6);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    height: fit-content;
+    border: 1px solid #e5e7eb;
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    padding-bottom: var(--spacing-6);
+    margin-bottom: var(--spacing-4);
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.avatar {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+}
+
+.userName {
+    font-weight: 700;
+    color: #1a1a2e;
+    font-size: 1rem;
+}
+
+.userEmail {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.navItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #374151;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.navItem:hover {
+    background: #f3f4f6;
+    color: #667eea;
+}
+
+.navIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+}
+
+.navIcon svg {
+    stroke: currentColor;
+}
+
+.logoutButton {
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin-top: 8px;
+    color: #ef4444;
+    font-family: inherit;
+}
+
+.logoutButton:hover {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.main {
+    min-height: 500px;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        margin-bottom: var(--spacing-4);
+    }
+}

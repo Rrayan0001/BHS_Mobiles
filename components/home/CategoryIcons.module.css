@@ -1,0 +1,112 @@
+.section {
+    padding: var(--spacing-8) 0;
+    background-color: var(--color-background);
+    border-bottom: 1px solid var(--color-surface);
+}
+
+.grid {
+    display: flex;
+    justify-content: space-between;
+    /* Spread to fill screen */
+    gap: var(--spacing-4);
+    flex-wrap: nowrap;
+    /* Keep in one row if possible, or scroll */
+    padding: var(--spacing-4);
+    overflow-x: auto;
+    /* Allow scroll on smaller screens if they don't fit */
+    -webkit-overflow-scrolling: touch;
+    width: auto;
+    /* Allow it to fit container */
+    max-width: 100%;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    gap: var(--spacing-4);
+    transition: transform 0.2s;
+    flex: 1;
+    /* Allow items to grow/shrink equally */
+    min-width: 100px;
+    /* Minimum width for readability */
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+.iconCircle {
+    width: 110px;
+    /* Significantly larger */
+    height: 110px;
+    border-radius: 50%;
+    background-color: #0056b3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3rem;
+    /* Larger icon graphic/text */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+}
+
+.card:hover .iconCircle {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+/* Special styling for 'Used Phones' */
+.specialCircle {
+    background-color: white;
+    border: 4px solid #00C853;
+    color: #00C853;
+}
+
+.icon {
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.label {
+    color: var(--color-text-main);
+    font-size: 1rem;
+    /* Increased font size */
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+}
+
+@media (max-width: 1024px) {
+    .iconCircle {
+        width: 90px;
+        height: 90px;
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid {
+        justify-content: flex-start;
+        gap: var(--spacing-6);
+        padding-bottom: var(--spacing-4);
+    }
+
+    .iconCircle {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+
+    .card {
+        min-width: 80px;
+    }
+
+    .label {
+        font-size: 0.9rem;
+    }
+}

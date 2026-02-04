@@ -1,0 +1,123 @@
+.main {
+    min-height: 100vh;
+    padding-bottom: var(--spacing-16);
+}
+
+.promiseSection {
+    padding: var(--spacing-12) 0;
+    text-align: center;
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: var(--spacing-4);
+}
+
+.sectionTitle {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    font-weight: 400;
+    max-width: 600px;
+    text-align: left;
+    color: var(--color-secondary);
+}
+
+.navArrows {
+    display: flex;
+    gap: var(--spacing-2);
+}
+
+.arrowButton {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--color-text-main);
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.arrowButton:hover {
+    background: var(--color-surface);
+}
+
+.sectionSubtitle {
+    text-align: left;
+    font-size: 1.125rem;
+    color: var(--color-text-main);
+}
+
+.link {
+    text-decoration: underline;
+    color: var(--color-text-main);
+    font-weight: 500;
+}
+
+.categoryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-8);
+}
+
+.categoryCard {
+    background: var(--color-surface);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    text-decoration: none;
+    color: var(--color-text-main);
+    transition: transform 0.2s;
+}
+
+.categoryCard:hover {
+    transform: translateY(-2px);
+    background: var(--color-surface-hover);
+}
+
+.categoryIcon {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-2);
+}
+
+.categoryCard h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.productGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-6);
+}
+
+.productPlaceholder {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--spacing-12);
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+}
+
+@media (max-width: 768px) {
+    .sectionTitle {
+        font-size: 2rem;
+    }
+
+    .sectionHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-4);
+    }
+
+    .navArrows {
+        display: none;
+        /* Hide for now on mobile */
+    }
+}

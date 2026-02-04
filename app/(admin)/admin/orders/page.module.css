@@ -1,0 +1,127 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+}
+
+.title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-neutral-900);
+}
+
+.filters {
+    display: flex;
+    gap: var(--spacing-2);
+    background: var(--color-white);
+    padding: var(--spacing-1);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-neutral-200);
+}
+
+.filterBtn {
+    padding: var(--spacing-2) var(--spacing-4);
+    background: none;
+    border: none;
+    border-radius: var(--radius-md);
+    color: var(--color-neutral-600);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filterBtn:hover {
+    background: var(--color-neutral-100);
+    color: var(--color-neutral-900);
+}
+
+.active {
+    background: var(--color-neutral-900);
+    color: var(--color-white);
+}
+
+.active:hover {
+    background: var(--color-neutral-800);
+    color: var(--color-white);
+}
+
+.tableCard {
+    overflow: hidden;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    text-align: left;
+    padding: var(--spacing-4);
+    font-size: var(--font-size-xs);
+    color: var(--color-neutral-500);
+    text-transform: uppercase;
+    font-weight: var(--font-weight-semibold);
+    border-bottom: 1px solid var(--color-neutral-200);
+    background: var(--color-neutral-50);
+}
+
+.table td {
+    padding: var(--spacing-4);
+    border-bottom: 1px solid var(--color-neutral-100);
+    vertical-align: middle;
+    font-size: var(--font-size-sm);
+}
+
+.orderId {
+    font-family: var(--font-mono);
+    font-weight: var(--font-weight-medium);
+}
+
+.customerName {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-neutral-900);
+}
+
+.date {
+    color: var(--color-neutral-500);
+}
+
+.total {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-neutral-900);
+}
+
+.actionBtn {
+    padding: var(--spacing-2) var(--spacing-3);
+    background: var(--color-white);
+    border: 1px solid var(--color-neutral-300);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.actionBtn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+@media (max-width: 1024px) {
+
+    .table th:nth-child(3),
+    .table td:nth-child(3),
+    .table th:nth-child(4),
+    .table td:nth-child(4) {
+        display: none;
+    }
+}
