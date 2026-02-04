@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import ProductCard from '@/components/product/ProductCard'
 import Input from '@/components/ui/Input'
 import styles from './page.module.css'
 
-export default function SearchPage() {
+function SearchContent() {
     const searchParams = useSearchParams()
     const initialQuery = searchParams.get('q') || ''
 
@@ -132,5 +132,26 @@ export default function SearchPage() {
                 ) : null}
             </div>
         </div>
+    )
+}
+
+function SearchLoading() {
+    return (
+        <div className={styles.page}>
+            <div className="container">
+                <div className={styles.loading}>
+                    <div className={styles.spinner}></div>
+                    <p>Loading Search...</p>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default function SearchPage() {
+    return (
+        <Suspense fallback={<SearchLoading />}>
+            <SearchContent />
+        </Suspense>
     )
 }
