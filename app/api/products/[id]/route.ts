@@ -4,11 +4,11 @@ import { createClient } from '@/lib/supabase/server'
 // GET - Fetch single product by ID
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const supabase = await createClient()
-        const { id } = params
+        const { id } = await params
 
         const { data: product, error } = await supabase
             .from('products')
