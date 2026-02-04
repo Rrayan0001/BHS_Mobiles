@@ -6,8 +6,36 @@ import { useParams } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
 import styles from './page.module.css'
 
+// Product type definition
+interface ProductVariant {
+    id: string
+    name: string
+    price: number
+}
+
+interface ProductData {
+    id: string
+    name: string
+    category: string
+    brand: string
+    price: number
+    mrp: number
+    discount: string
+    rating: number
+    ratingCount: number
+    images: string[]
+    variants: ProductVariant[]
+    description: string[]
+    specifications: { [key: string]: string }
+    delivery: {
+        dispatchDays: string
+        expectedBy: string
+        shipping: string
+    }
+}
+
 // Mock product data - This would come from Supabase in production
-const mockProducts: { [key: string]: typeof sampleProduct } = {
+const mockProducts: { [key: string]: ProductData } = {
     'tp1': {
         id: 'tp1',
         name: 'Samsung S24 Ultra',
@@ -36,6 +64,41 @@ const mockProducts: { [key: string]: typeof sampleProduct } = {
             'Camera': '200MP + 12MP + 10MP + 50MP',
             'Battery': '5000mAh',
             'Storage': '256GB / 512GB',
+        },
+        delivery: {
+            dispatchDays: '1-2 Days',
+            expectedBy: '7-10 Days',
+            shipping: 'FREE',
+        },
+    },
+    'tp2': {
+        id: 'tp2',
+        name: 'Samsung S25 Ultra',
+        category: 'Android',
+        brand: 'Samsung',
+        price: 82999,
+        mrp: 124499,
+        discount: '33% OFF',
+        rating: 4.7,
+        ratingCount: 35,
+        images: ['📱'],
+        variants: [
+            { id: 'v1', name: '256GB', price: 82999 },
+            { id: 'v2', name: '512GB', price: 94999 },
+        ],
+        description: [
+            'Comes with Bill & UPTO 1 YEAR Warranty',
+            'Colors: Titanium Black, Titanium Grey',
+            'This device is 100% Original & Brand New',
+            '5G Connectivity',
+            'What Comes along: Phone + Charger + Box',
+        ],
+        specifications: {
+            'Display': '6.9" Dynamic AMOLED 2X',
+            'Processor': 'Snapdragon 8 Gen 4',
+            'Camera': '200MP + 50MP + 12MP + 10MP',
+            'Battery': '5500mAh',
+            'Storage': '256GB / 512GB / 1TB',
         },
         delivery: {
             dispatchDays: '1-2 Days',
@@ -113,9 +176,77 @@ const mockProducts: { [key: string]: typeof sampleProduct } = {
             shipping: 'FREE',
         },
     },
+    'tp5': {
+        id: 'tp5',
+        name: 'Watch Series Ultra',
+        category: 'iWatch',
+        brand: 'Apple',
+        price: 42999,
+        mrp: 60199,
+        discount: '29% OFF',
+        rating: 4.6,
+        ratingCount: 22,
+        images: ['⌚'],
+        variants: [
+            { id: 'v1', name: '49MM', price: 42999 },
+        ],
+        description: [
+            'Comes with Bill & UPTO 1 YEAR APPLE Warranty',
+            'Colors: Natural Titanium',
+            'This device is 100% Original & Brand New',
+            'GPS + Cellular',
+            'What Comes along: Watch & Strap',
+        ],
+        specifications: {
+            'Display': '49mm Always-On Retina LTPO OLED',
+            'Processor': 'S8 SiP',
+            'Water Resistance': '100m',
+            'Battery': '36 hours',
+            'Connectivity': 'GPS + Cellular',
+        },
+        delivery: {
+            dispatchDays: '1-2 Days',
+            expectedBy: '7-10 Days',
+            shipping: 'FREE',
+        },
+    },
+    'tp6': {
+        id: 'tp6',
+        name: 'AirPods Pro 2',
+        category: 'Airpods',
+        brand: 'Apple',
+        price: 18999,
+        mrp: 26900,
+        discount: '30% OFF',
+        rating: 4.9,
+        ratingCount: 89,
+        images: ['🎧'],
+        variants: [
+            { id: 'v1', name: 'USB-C', price: 18999 },
+        ],
+        description: [
+            'Comes with Bill & UPTO 1 YEAR APPLE Warranty',
+            'Colors: White',
+            'This device is 100% Original & Brand New',
+            'Active Noise Cancellation',
+            'What Comes along: Earbuds + Case + Cable',
+        ],
+        specifications: {
+            'Chip': 'H2',
+            'Noise Cancellation': 'Active',
+            'Battery': '6 hours (30 with case)',
+            'Connectivity': 'Bluetooth 5.3',
+            'Water Resistance': 'IPX4',
+        },
+        delivery: {
+            dispatchDays: '1-2 Days',
+            expectedBy: '5-7 Days',
+            shipping: 'FREE',
+        },
+    },
 }
 
-const sampleProduct = mockProducts['tp4']
+const defaultProduct = mockProducts['tp4']
 
 export default function ProductDetailPage() {
     const params = useParams()
@@ -123,7 +254,7 @@ export default function ProductDetailPage() {
     const { addItem } = useCart()
 
     // Get product from mock data or use default
-    const product = mockProducts[productId] || mockProducts['tp4']
+    const product = mockProducts[productId] || defaultProduct
 
     const [selectedVariant, setSelectedVariant] = useState(product.variants[0])
     const [quantity, setQuantity] = useState(1)
