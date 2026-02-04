@@ -1,13 +1,13 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import styles from './page.module.css'
 
-export default function OrderSuccessPage() {
+function OrderSuccessContent() {
     const searchParams = useSearchParams()
     const orderNumber = searchParams.get('order') || 'ORD-UNKNOWN'
     const [confetti, setConfetti] = useState(true)
@@ -93,5 +93,26 @@ export default function OrderSuccessPage() {
                 </div>
             </div>
         </div>
+    )
+}
+
+function LoadingFallback() {
+    return (
+        <div className={styles.page}>
+            <div className="container">
+                <div className={styles.content}>
+                    <div className={styles.successIcon}>⏳</div>
+                    <h1 className={styles.title}>Loading...</h1>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default function OrderSuccessPage() {
+    return (
+        <Suspense fallback={<LoadingFallback />}>
+            <OrderSuccessContent />
+        </Suspense>
     )
 }
