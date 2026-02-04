@@ -86,7 +86,7 @@ export default function AdminOrdersPage() {
                                         variant={
                                             order.status === 'delivered' ? 'success' :
                                                 order.status === 'shipped' ? 'primary' :
-                                                    order.status === 'pending' ? 'warning' : 'danger'
+                                                    order.status === 'pending' ? 'warning' : 'error'
                                         }
                                         size="sm"
                                     >
