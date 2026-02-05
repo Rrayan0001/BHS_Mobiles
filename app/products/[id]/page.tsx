@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
+import { useAuth } from '@/contexts/AuthContext'
 import styles from './page.module.css'
 
 // Product type definition
@@ -250,8 +251,10 @@ const defaultProduct = mockProducts['tp4']
 
 export default function ProductDetailPage() {
     const params = useParams()
+    const router = useRouter()
     const productId = params.id as string
     const { addItem } = useCart()
+    const { isAuthenticated } = useAuth()
 
     // Get product from mock data or use default
     const product = mockProducts[productId] || defaultProduct
@@ -268,6 +271,24 @@ export default function ProductDetailPage() {
             image: product.images[0],
             variant: selectedVariant.name
         })
+    }
+
+    const handleOrderNow = () => {
+        // Add item to cart first
+        addItem({
+            id: `${product.id}-${selectedVariant.id}`,
+            name: product.name,
+            price: selectedVariant.price,
+            image: product.images[0],
+            variant: selectedVariant.name
+        })
+
+        // Check if user is logged in
+        if (isAuthenticated) {
+            router.push('/checkout')
+        } else {
+            router.push('/auth/login?redirect=/checkout')
+        }
     }
 
     const toggleAccordion = (section: string) => {
@@ -366,9 +387,14 @@ export default function ProductDetailPage() {
                             </div>
                             <button className={styles.addToCartBtn} onClick={handleAddToCart}>
                                 <span className={styles.cartIcon}>🛒</span>
-                                Add to Cart - Rs. {(selectedVariant.price * quantity).toLocaleString()}
+                                Add to Cart
                             </button>
                         </div>
+
+                        {/* Order Now Button */}
+                        <button className={styles.orderNowBtn} onClick={handleOrderNow}>
+                            ⚡ Order Now - Rs. {(selectedVariant.price * quantity).toLocaleString()}
+                        </button>
 
                         <button className={styles.wishlistBtn}>
                             <span>♡</span> Add to Wishlist

@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
 import styles from './page.module.css'
 
 // SVG Icons
@@ -49,6 +51,8 @@ const RefreshIcon = () => (
 )
 
 export default function CartPage() {
+    const router = useRouter()
+    const { isAuthenticated } = useAuth()
     const [cartItems, setCartItems] = useState<any[]>([])
 
     const updateQuantity = (itemId: string, newQuantity: number) => {
@@ -61,6 +65,14 @@ export default function CartPage() {
 
     const removeItem = (itemId: string) => {
         setCartItems((items) => items.filter((item) => item.id !== itemId))
+    }
+
+    const handleCheckout = () => {
+        if (isAuthenticated) {
+            router.push('/checkout')
+        } else {
+            router.push('/auth/login?redirect=/checkout')
+        }
     }
 
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -185,7 +197,7 @@ export default function CartPage() {
                             <span>₹{total.toLocaleString('en-IN')}</span>
                         </div>
 
-                        <button className={styles.checkoutBtn}>
+                        <button className={styles.checkoutBtn} onClick={handleCheckout}>
                             Proceed to Checkout
                         </button>
 

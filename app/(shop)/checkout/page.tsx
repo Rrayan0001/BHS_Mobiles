@@ -1,7 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
@@ -9,11 +11,18 @@ import styles from './page.module.css'
 
 export default function CheckoutPage() {
     const router = useRouter()
+    const { user, isAuthenticated } = useAuth()
     const [step, setStep] = useState<'shipping' | 'payment' | 'review'>('shipping')
-    const [isGuest, setIsGuest] = useState(true)
+
+    // Redirect if not authenticated
+    useEffect(() => {
+        if (!isAuthenticated) {
+            router.push('/auth/login?redirect=/checkout')
+        }
+    }, [isAuthenticated, router])
 
     // Form state
-    const [email, setEmail] = useState('')
+    const [email, setEmail] = useState(user?.email || '')
     const [shippingAddress, setShippingAddress] = useState({
         fullName: '',
         phone: '',
@@ -91,23 +100,6 @@ export default function CheckoutPage() {
                         {step === 'shipping' && (
                             <Card padding="lg">
                                 <h2 className={styles.sectionTitle}>Shipping Information</h2>
-
-                                {isGuest && (
-                                    <div className={styles.guestSection}>
-                                        <Input
-                                            label="Email Address"
-                                            type="email"
-                                            placeholder="your@email.com"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            fullWidth
-                                            helperText="We'll send your order confirmation here"
-                                        />
-                                        <p className={styles.loginPrompt}>
-                                            Already have an account? <a href="/auth/login">Log in</a>
-                                        </p>
-                                    </div>
-                                )}
 
                                 <div className={styles.formGrid}>
                                     <Input

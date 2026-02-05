@@ -16,7 +16,7 @@ export default function Footer() {
                         </h2>
                     </div>
                     <div className={styles.ownerInfo}>
-                        Owned By: Mr. Nawaz
+                        Owned By: Mr. Nawaz Pasha S
                     </div>
                 </div>
 
@@ -33,7 +33,7 @@ export default function Footer() {
                             </div>
                             <div className={styles.infoRow}>
                                 <span className={styles.label}>Email:</span>
-                                <a href="mailto:info@nawazmobiles.com" style={{ color: 'inherit', textDecoration: 'none' }}>info@nawazmobiles.com</a>
+                                <a href="mailto:nawazkhan96325@gmail.com" style={{ color: 'inherit', textDecoration: 'none' }}>nawazkhan96325@gmail.com</a>
                             </div>
                             <div className={styles.infoRow}>
                                 <span className={styles.label}>Address:</span>
