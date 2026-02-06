@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
         const category = searchParams.get('category')
         const subcategory = searchParams.get('subcategory')
         const search = searchParams.get('search')
+        const featured = searchParams.get('featured')
         const minPrice = searchParams.get('minPrice')
         const maxPrice = searchParams.get('maxPrice')
         const condition = searchParams.get('condition')
@@ -103,9 +104,17 @@ export async function GET(request: NextRequest) {
             query = query.eq('condition_grade', condition)
         }
 
+        if (featured === 'true') {
+            query = query.eq('is_featured', true).order('featured_order', { ascending: true })
+        }
+
         // Apply sorting
         const sortColumn = sort === 'price' ? 'price' : 'created_at'
-        query = query.order(sortColumn, { ascending: order === 'asc' })
+        // Only apply default sorting if not featured, as featured has its own sort
+        if (featured !== 'true') {
+            query = query.order(sortColumn, { ascending: order === 'asc' })
+        }
+
 
         // Apply pagination
         query = query.range(offset, offset + limit - 1)
