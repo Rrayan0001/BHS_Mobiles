@@ -251,3 +251,30 @@
         font-size: 1rem;
     }
 }
+
+@media (max-width: 560px) {
+    .section {
+        padding: var(--spacing-6) 0;
+    }
+
+    .scrollContainer {
+        gap: var(--spacing-4);
+        padding-left: var(--spacing-3);
+    }
+
+    .card {
+        min-width: 240px;
+        width: 240px;
+        height: 380px;
+        border-radius: 26px;
+        border-width: 2px;
+    }
+
+    .cardTop {
+        height: 200px;
+    }
+
+    .navButtons {
+        display: none;
+    }
+}

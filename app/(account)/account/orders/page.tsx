@@ -8,37 +8,27 @@ import Button from '@/components/ui/Button'
 import styles from './page.module.css'
 
 export default function MyOrdersPage() {
-    const orders = [
-        {
-            id: 'ORD-12345',
-            date: 'Oct 24, 2023',
-            total: 45999,
-            status: 'delivered',
-            items: [
-                { title: 'iPhone 13 Pro', image: '/placeholder.jpg' }
-            ]
-        },
-        {
-            id: 'ORD-12346',
-            date: 'Sep 15, 2023',
-            total: 2499,
-            status: 'delivered',
-            items: [
-                { title: 'AirPods Pro Case', image: '/placeholder.jpg' },
-                { title: 'USB-C Cable', image: '/placeholder.jpg' }
-            ]
-        },
-        {
-            id: 'ORD-12347',
-            date: 'Aug 05, 2023',
-            total: 12999,
-            status: 'processing',
-            items: [
-                { title: 'Galaxy Watch 4', image: '/placeholder.jpg' }
-            ]
-        }
-    ]
+    const orders: any[] = [] // Empty for now
 
+    if (orders.length === 0) {
+        return (
+            <div className={styles.page}>
+                <h1 className={styles.title}>My Orders</h1>
+                <div className={styles.emptyState}>
+                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📦</div>
+                    <h3>No orders yet</h3>
+                    <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
+                        You haven&apos;t placed any orders yet.
+                    </p>
+                    <Link href="/">
+                        <Button variant="primary">Start Shopping</Button>
+                    </Link>
+                </div>
+            </div>
+        )
+    }
+
+    // ... kept original render logic for when orders exist (future use) ...
     const getStatusVariant = (status: string) => {
         switch (status) {
             case 'delivered': return 'success'
@@ -64,7 +54,7 @@ export default function MyOrdersPage() {
                         </div>
 
                         <div className={styles.items}>
-                            {order.items.map((item, idx) => (
+                            {order.items.map((item: any, idx: number) => (
                                 <div key={idx} className={styles.item}>
                                     <div className={styles.itemImageFallback}>📱</div>
                                     <span className={styles.itemName}>{item.title}</span>

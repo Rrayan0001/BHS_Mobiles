@@ -7,12 +7,19 @@ import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import styles from './page.module.css'
 
+import { useCart } from '@/contexts/CartContext'
+
 function OrderSuccessContent() {
     const searchParams = useSearchParams()
     const orderNumber = searchParams.get('order') || 'ORD-UNKNOWN'
     const [confetti, setConfetti] = useState(true)
+    const { clearCart, setIsOpen } = useCart()
 
     useEffect(() => {
+        // Clear cart and ensure popup is closed
+        clearCart()
+        setIsOpen(false)
+
         // Hide confetti after animation
         const timer = setTimeout(() => setConfetti(false), 3000)
         return () => clearTimeout(timer)

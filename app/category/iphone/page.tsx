@@ -5,18 +5,7 @@ import { useCart } from '@/contexts/CartContext'
 import styles from './iphone.module.css'
 
 // Mock iPhone product data - replace with real data from Supabase
-const iphones = [
-    { id: '1', name: 'iPhone 15 - 128GB', price: 29999, oldPrice: 44999, image: '📱', colors: ['#ff0000', '#0066cc', '#000000', '#00cc66'] },
-    { id: '2', name: 'iPhone 13 Pro - 128GB', price: 39999, oldPrice: 64999, image: '📱', colors: ['#c9b8a8', '#1a1a1a', '#00cc66', '#ffffff'] },
-    { id: '3', name: 'iPhone 13 Pro - 256GB', price: 44999, oldPrice: 64999, image: '📱', colors: ['#1a1a1a', '#c9b8a8', '#ffffff', '#00cc66'] },
-    { id: '4', name: 'iPhone 15 - 128GB', price: 44999, oldPrice: 59999, image: '📱', colors: ['#1a1a1a', '#ffffff', '#ffcccc', '#c9b8a8'] },
-    { id: '5', name: 'iPhone 15 Pro - 256GB', price: 84999, oldPrice: 99999, image: '📱', colors: ['#1a1a1a', '#ffffff', '#c9b8a8', '#0066cc'] },
-    { id: '6', name: 'iPhone 17 - 256GB', price: 74999, oldPrice: 94999, image: '📱', colors: ['#1a1a1a', '#c9b8a8', '#ffffff', '#0066cc'] },
-    { id: '7', name: 'iPhone 16 Pro - 128GB', price: 89999, oldPrice: 119999, image: '📱', colors: ['#1a1a1a', '#c9b8a8', '#ffffff', '#8b7355'] },
-    { id: '8', name: 'iPhone 14 Pro - 512GB', price: 89999, oldPrice: 119999, image: '📱', colors: ['#1a1a1a', '#c9b8a8', '#ffffff', '#8b7355'] },
-    { id: '9', name: 'iPhone 7 Plus - 256GB', price: 9151, oldPrice: null, image: '📱', colors: ['#1a1a1a', '#ff6600', '#0066cc'] },
-    { id: '10', name: 'iPhone 7 Plus Max - 256GB', price: 9151, oldPrice: null, image: '📱', colors: ['#1a1a1a', '#ff6600'] },
-]
+const iphones: any[] = []
 
 export default function IPhonePage() {
     const { addItem } = useCart()
@@ -76,7 +65,7 @@ export default function IPhonePage() {
 
                                 {/* Color Options */}
                                 <div className={styles.colorOptions}>
-                                    {product.colors.map((color, idx) => (
+                                    {product.colors.map((color: string, idx: number) => (
                                         <div
                                             key={idx}
                                             className={styles.colorDot}

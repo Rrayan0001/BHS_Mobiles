@@ -392,3 +392,17 @@
         grid-template-columns: 1fr;
     }
 }
+
+@media (max-width: 640px) {
+    .page {
+        padding: 2rem 0;
+    }
+
+    .cartItem {
+        padding: 1.25rem;
+    }
+
+    .summary {
+        padding: 1.25rem;
+    }
+}

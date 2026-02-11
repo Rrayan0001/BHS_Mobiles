@@ -4,18 +4,7 @@ import React from 'react'
 import { useCart } from '@/contexts/CartContext'
 import styles from './accessories.module.css'
 
-const accessories = [
-    { id: 'acc1', name: 'MagSafe Charger - 15W', price: 3999, oldPrice: 4900, image: '🔌', variant: '15W' },
-    { id: 'acc2', name: 'USB-C to Lightning Cable - 1m', price: 1999, oldPrice: 2900, image: '🔌', variant: '1m' },
-    { id: 'acc3', name: 'iPhone 15 Pro Silicone Case', price: 4999, oldPrice: 5900, image: '📱', variant: 'Silicone' },
-    { id: 'acc4', name: 'AirTag - 4 Pack', price: 9999, oldPrice: 11900, image: '🏷️', variant: '4 Pack' },
-    { id: 'acc5', name: 'Apple Pencil (2nd Gen)', price: 11999, oldPrice: 13900, image: '✏️', variant: '2nd Gen' },
-    { id: 'acc6', name: 'Magic Keyboard for iPad Pro', price: 29999, oldPrice: 34900, image: '⌨️', variant: 'iPad Pro' },
-    { id: 'acc7', name: 'Watch Sport Band', price: 4999, oldPrice: 5900, image: '⌚', variant: 'Sport' },
-    { id: 'acc8', name: 'iPhone 15 Clear Case', price: 3999, oldPrice: 4900, image: '📱', variant: 'Clear' },
-    { id: 'acc9', name: 'USB-C Power Adapter - 20W', price: 1999, oldPrice: 2900, image: '🔌', variant: '20W' },
-    { id: 'acc10', name: 'Screen Protector - Tempered Glass', price: 999, oldPrice: 1499, image: '🛡️', variant: 'Tempered' },
-]
+const accessories: any[] = []
 
 export default function AccessoriesPage() {
     const { addItem } = useCart()

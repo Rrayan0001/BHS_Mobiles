@@ -1,46 +1,117 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import ConditionBadge from '@/components/product/ConditionBadge'
+import { useCart } from '@/contexts/CartContext'
 import styles from './page.module.css'
+
+interface Product {
+    id: string
+    title: string
+    description: string
+    price: number
+    compare_at_price: number | null
+    stock_quantity: number
+    condition_grade: 'A' | 'B' | 'C'
+    warranty_months: number
+    sku: string
+    images: { url: string; alt: string; is_primary: boolean }[]
+    attributes: { label: string; value: string }[]
+}
 
 export default function ProductDetailPage() {
     const params = useParams()
     const slug = params.slug as string
+    const { addItem } = useCart()
 
+    const [product, setProduct] = useState<Product | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
     const [selectedImage, setSelectedImage] = useState(0)
     const [quantity, setQuantity] = useState(1)
 
-    // Mock product data - will be replaced with Supabase query
-    const product = {
-        id: slug,
-        title: 'iPhone 13 Pro 128GB - Sierra Blue',
-        description: 'Fully tested and certified refurbished iPhone 13 Pro in excellent condition. Includes original box and accessories.',
-        price: 45999,
-        compare_at_price: 54999,
-        stock_quantity: 3,
-        condition_grade: 'A' as const,
-        warranty_months: 6,
-        sku: 'IP13P-128-SB-A',
-        images: [
-            { url: '/placeholder.jpg', alt: 'Front view', is_primary: true },
-            { url: '/placeholder.jpg', alt: 'Back view', is_primary: false },
-            { url: '/placeholder.jpg', alt: 'Side view', is_primary: false },
-        ],
-        attributes: [
-            { label: 'Brand', value: 'Apple' },
-            { label: 'Model', value: 'iPhone 13 Pro' },
-            { label: 'Storage', value: '128GB' },
-            { label: 'RAM', value: '6GB' },
-            { label: 'Color', value: 'Sierra Blue' },
-            { label: 'Battery Health', value: '95%' },
-            { label: 'IMEI', value: '123456789012345' },
-            { label: 'Accessories', value: 'Charger, Cable, Box' },
-        ],
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                setLoading(true)
+                const res = await fetch(`/api/products/${slug}`)
+
+                if (!res.ok) {
+                    if (res.status === 404) throw new Error('Product not found')
+                    throw new Error('Failed to fetch product')
+                }
+
+                const data = await res.json()
+                const p = data.product
+
+                // Map API response to component state structure
+                setProduct({
+                    id: p.id,
+                    title: p.title,
+                    description: p.description,
+                    price: p.price,
+                    compare_at_price: p.compare_price, // Field mapping
+                    stock_quantity: p.stock,          // Field mapping
+                    condition_grade: p.condition,     // Field mapping
+                    warranty_months: 6, // Default or fetch if available
+                    sku: p.sku || 'N/A',
+                    images: p.images?.map((url: string, index: number) => ({
+                        url,
+                        alt: p.title,
+                        is_primary: index === 0
+                    })) || [],
+                    attributes: p.attributes || []
+                })
+            } catch (err: any) {
+                console.error(err)
+                setError(err.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        if (slug) {
+            fetchProduct()
+        }
+    }, [slug])
+
+    const handleAddToCart = () => {
+        if (!product) return
+        addItem({
+            id: product.id,
+            name: product.title,
+            price: product.price,
+            image: product.images[0]?.url || '/placeholder.png',
+            variant: ''
+        })
+    }
+
+    if (loading) {
+        return (
+            <div className={styles.page}>
+                <div className="container" style={{ textAlign: 'center', padding: '4rem' }}>
+                    Loading product details...
+                </div>
+            </div>
+        )
+    }
+
+    if (error || !product) {
+        return (
+            <div className={styles.page}>
+                <div className="container" style={{ textAlign: 'center', padding: '4rem' }}>
+                    <h2>Product not found</h2>
+                    <p>The product you are looking for does not exist or has been removed.</p>
+                    <Button variant="primary" onClick={() => window.history.back()}>
+                        Go Back
+                    </Button>
+                </div>
+            </div>
+        )
     }
 
     const discount = product.compare_at_price
@@ -53,7 +124,7 @@ export default function ProductDetailPage() {
                 <div className={styles.breadcrumbs}>
                     <a href="/">Home</a>
                     <span>/</span>
-                    <a href="/category/smartphones">Smartphones</a>
+                    <a href="/products">Products</a>
                     <span>/</span>
                     <span>{product.title}</span>
                 </div>
@@ -62,29 +133,41 @@ export default function ProductDetailPage() {
                     <div className={styles.gallery}>
                         <div className={styles.mainImage}>
                             <div className={styles.imageWrapper}>
-                                <div className={styles.imagePlaceholder}>
-                                    <span className={styles.placeholderIcon}>📱</span>
-                                    <p className={styles.placeholderText}>Product Image</p>
-                                </div>
+                                {product.images.length > 0 ? (
+                                    <img
+                                        src={product.images[selectedImage].url}
+                                        alt={product.images[selectedImage].alt}
+                                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                    />
+                                ) : (
+                                    <div className={styles.imagePlaceholder}>
+                                        <span className={styles.placeholderIcon}>📱</span>
+                                        <p className={styles.placeholderText}>Product Image</p>
+                                    </div>
+                                )}
                             </div>
                             {discount > 0 && (
                                 <div className={styles.discountBadge}>-{discount}% OFF</div>
                             )}
                         </div>
 
-                        <div className={styles.thumbnails}>
-                            {product.images.map((image, index) => (
-                                <button
-                                    key={index}
-                                    className={`${styles.thumbnail} ${selectedImage === index ? styles.thumbnailActive : ''}`}
-                                    onClick={() => setSelectedImage(index)}
-                                >
-                                    <div className={styles.thumbnailPlaceholder}>
-                                        <span>📷</span>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
+                        {product.images.length > 1 && (
+                            <div className={styles.thumbnails}>
+                                {product.images.map((image, index) => (
+                                    <button
+                                        key={index}
+                                        className={`${styles.thumbnail} ${selectedImage === index ? styles.thumbnailActive : ''}`}
+                                        onClick={() => setSelectedImage(index)}
+                                    >
+                                        <img
+                                            src={image.url}
+                                            alt={image.alt}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     <div className={styles.details}>
@@ -93,9 +176,11 @@ export default function ProductDetailPage() {
                                 <Badge variant="success" size="md">
                                     Grade {product.condition_grade}
                                 </Badge>
-                                <Badge variant="neutral" size="sm">
-                                    SKU: {product.sku}
-                                </Badge>
+                                {product.sku !== 'N/A' && (
+                                    <Badge variant="neutral" size="sm">
+                                        SKU: {product.sku}
+                                    </Badge>
+                                )}
                             </div>
                             {product.stock_quantity > 0 && product.stock_quantity <= 5 && (
                                 <span className={styles.lowStock}>
@@ -111,13 +196,13 @@ export default function ProductDetailPage() {
                                 <span className={styles.price}>
                                     ₹{product.price.toLocaleString('en-IN')}
                                 </span>
-                                {product.compare_at_price && (
+                                {product.compare_at_price && product.compare_at_price > product.price && (
                                     <span className={styles.comparePrice}>
                                         ₹{product.compare_at_price.toLocaleString('en-IN')}
                                     </span>
                                 )}
                             </div>
-                            {discount > 0 && (
+                            {discount > 0 && product.compare_at_price && (
                                 <span className={styles.savings}>
                                     You save ₹{(product.compare_at_price - product.price).toLocaleString('en-IN')} ({discount}%)
                                 </span>
@@ -158,7 +243,7 @@ export default function ProductDetailPage() {
                             </div>
 
                             <div className={styles.buttons}>
-                                <Button variant="primary" size="lg" fullWidth>
+                                <Button variant="primary" size="lg" fullWidth onClick={handleAddToCart}>
                                     Add to Cart
                                 </Button>
                                 <Button variant="secondary" size="lg" fullWidth>
@@ -193,17 +278,19 @@ export default function ProductDetailPage() {
                     </div>
                 </div>
 
-                <div className={styles.specifications}>
-                    <h2>Specifications</h2>
-                    <div className={styles.specsGrid}>
-                        {product.attributes.map((attr, index) => (
-                            <div key={index} className={styles.specItem}>
-                                <span className={styles.specLabel}>{attr.label}</span>
-                                <span className={styles.specValue}>{attr.value}</span>
-                            </div>
-                        ))}
+                {product.attributes.length > 0 && (
+                    <div className={styles.specifications}>
+                        <h2>Specifications</h2>
+                        <div className={styles.specsGrid}>
+                            {product.attributes.map((attr, index) => (
+                                <div key={index} className={styles.specItem}>
+                                    <span className={styles.specLabel}>{attr.label}</span>
+                                    <span className={styles.specValue}>{attr.value}</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     )

@@ -18,6 +18,7 @@
     width: auto;
     /* Allow it to fit container */
     max-width: 100%;
+    scroll-snap-type: x mandatory;
 }
 
 .card {
@@ -31,6 +32,7 @@
     /* Allow items to grow/shrink equally */
     min-width: 100px;
     /* Minimum width for readability */
+    scroll-snap-align: start;
 }
 
 .card:hover {
@@ -94,6 +96,8 @@
         justify-content: flex-start;
         gap: var(--spacing-6);
         padding-bottom: var(--spacing-4);
+        padding-left: var(--spacing-2);
+        padding-right: var(--spacing-2);
     }
 
     .iconCircle {
@@ -108,5 +112,29 @@
 
     .label {
         font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .section {
+        padding: var(--spacing-6) 0 var(--spacing-4);
+    }
+
+    .grid {
+        gap: var(--spacing-4);
+    }
+
+    .iconCircle {
+        width: 68px;
+        height: 68px;
+        font-size: 1.6rem;
+    }
+
+    .card {
+        min-width: 72px;
+    }
+
+    .label {
+        font-size: 0.8rem;
     }
 }

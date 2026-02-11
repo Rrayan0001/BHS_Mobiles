@@ -8,7 +8,6 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url)
 
         const category = searchParams.get('category')
-        const subcategory = searchParams.get('subcategory')
         const search = searchParams.get('search')
         const featured = searchParams.get('featured')
         const minPrice = searchParams.get('minPrice')
@@ -22,74 +21,26 @@ export async function GET(request: NextRequest) {
         let query = supabase
             .from('products')
             .select(`
-                id,
-                sku,
-                title,
-                description,
-                price,
-                compare_at_price,
-                stock_quantity,
-                condition_grade,
-                warranty_months,
-                status,
-                created_at,
-                subcategory_id,
-                subcategories (
-                    id,
-                    name,
-                    slug,
-                    category_id,
-                    categories (
-                        id,
-                        name,
-                        slug
-                    )
-                ),
-                product_images (
-                    id,
-                    url,
-                    alt_text,
-                    is_primary,
-                    sort_order
-                ),
-                product_attributes (
-                    id,
-                    value,
-                    attribute_definition_id,
-                    attribute_definitions (
-                        name,
-                        label
-                    )
-                )
+                *,
+                category:categories(id, name, display_name, slug)
             `, { count: 'exact' })
-            .eq('status', 'published')
+            .eq('status', 'active')
 
-        // Apply filters
-        if (subcategory) {
-            const { data: sub } = await supabase
-                .from('subcategories')
+        // Filter by category slug
+        if (category) {
+            const { data: cat } = await supabase
+                .from('categories')
                 .select('id')
-                .eq('slug', subcategory)
+                .eq('name', category)
                 .single()
 
-            if (sub) {
-                query = query.eq('subcategory_id', sub.id)
-            }
-        }
-
-        if (category) {
-            const { data: cats } = await supabase
-                .from('subcategories')
-                .select('id, categories!inner(slug)')
-                .eq('categories.slug', category)
-
-            if (cats && cats.length > 0) {
-                query = query.in('subcategory_id', cats.map(c => c.id))
+            if (cat) {
+                query = query.eq('category_id', cat.id)
             }
         }
 
         if (search) {
-            query = query.textSearch('title', search, { type: 'websearch' })
+            query = query.ilike('title', `%${search}%`)
         }
 
         if (minPrice) {
@@ -101,7 +52,7 @@ export async function GET(request: NextRequest) {
         }
 
         if (condition) {
-            query = query.eq('condition_grade', condition)
+            query = query.eq('condition', condition)
         }
 
         if (featured === 'true') {
@@ -109,12 +60,10 @@ export async function GET(request: NextRequest) {
         }
 
         // Apply sorting
-        const sortColumn = sort === 'price' ? 'price' : 'created_at'
-        // Only apply default sorting if not featured, as featured has its own sort
         if (featured !== 'true') {
+            const sortColumn = sort === 'price' ? 'price' : 'created_at'
             query = query.order(sortColumn, { ascending: order === 'asc' })
         }
-
 
         // Apply pagination
         query = query.range(offset, offset + limit - 1)
@@ -122,11 +71,12 @@ export async function GET(request: NextRequest) {
         const { data: products, error, count } = await query
 
         if (error) {
+            console.error('Products query error:', error)
             return NextResponse.json({ error: error.message }, { status: 500 })
         }
 
         return NextResponse.json({
-            products,
+            products: products || [],
             total: count,
             limit,
             offset

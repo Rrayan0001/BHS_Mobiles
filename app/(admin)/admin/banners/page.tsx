@@ -230,8 +230,21 @@ export default function BannerManagementPage() {
 
             {/* Modal */}
             {showModal && (
-                <div className={styles.modal}>
-                    <div className={styles.modalContent}>
+                <div className={styles.modal} onClick={() => {
+                    setShowModal(false)
+                    setEditingBanner(null)
+                }}>
+                    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                        <button
+                            className={styles.closeButton}
+                            onClick={() => {
+                                setShowModal(false)
+                                setEditingBanner(null)
+                            }}
+                            aria-label="Close modal"
+                        >
+                            ×
+                        </button>
                         <h2>{editingBanner ? 'Edit Banner' : 'Add New Banner'}</h2>
                         <form onSubmit={handleSubmit} className={styles.form}>
                             <Input

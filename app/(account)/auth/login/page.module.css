@@ -3,18 +3,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-neutral-50);
+    background: var(--color-surface);
     padding: var(--spacing-8) 0;
 }
 
 .authWrapper {
-    max-width: 450px;
+    max-width: 420px;
     margin: 0 auto;
     width: 100%;
 }
 
 .authCard {
     width: 100%;
+    background: var(--color-white);
+    border-radius: var(--radius-xl) !important;
+    box-shadow: var(--shadow-lg) !important;
+    border: 1px solid var(--color-neutral-200) !important;
 }
 
 .header {
@@ -23,15 +27,18 @@
 }
 
 .title {
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-extrabold);
-    color: var(--color-neutral-900);
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: var(--color-text-main);
     margin-bottom: var(--spacing-2);
+    letter-spacing: -0.02em;
 }
 
 .subtitle {
-    color: var(--color-neutral-600);
+    color: var(--color-neutral-500);
     font-size: var(--font-size-base);
+    font-family: var(--font-sans);
 }
 
 .form {
@@ -42,6 +49,7 @@
 
 .passwordWrapper {
     position: relative;
+    width: 100%;
 }
 
 .forgotPassword {
@@ -49,8 +57,14 @@
     top: 0;
     right: 0;
     font-size: var(--font-size-xs);
-    color: var(--color-primary);
+    color: var(--color-neutral-600);
     font-weight: var(--font-weight-medium);
+    text-decoration: underline;
+    transition: color var(--transition-fast);
+}
+
+.forgotPassword:hover {
+    color: var(--color-search-text);
 }
 
 .divider {
@@ -81,13 +95,14 @@
 }
 
 .link {
-    color: var(--color-primary);
+    color: var(--color-text-main);
     font-weight: var(--font-weight-semibold);
     transition: color var(--transition-fast);
+    text-decoration: underline;
 }
 
 .link:hover {
-    text-decoration: underline;
+    color: var(--color-search-text);
 }
 
 .errorAlert {
@@ -98,4 +113,56 @@
     font-size: var(--font-size-sm);
     margin-bottom: var(--spacing-6);
     text-align: center;
+}
+
+/* OTP Verification Styles */
+.otpIcon {
+    font-size: 3rem;
+    margin-bottom: var(--spacing-3);
+}
+
+.otpEmail {
+    color: var(--color-text-main);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-base);
+    margin-top: var(--spacing-1);
+    word-break: break-all;
+}
+
+.otpContainer {
+    display: flex;
+    justify-content: center;
+    margin: var(--spacing-4) 0;
+}
+
+.otpInput {
+    width: 100%;
+    height: 3.25rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.5em;
+    border: 2px solid var(--color-neutral-300);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+    color: var(--color-text-main);
+    outline: none;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    font-family: var(--font-sans);
+}
+
+.otpInput::placeholder {
+    font-size: 0.9rem;
+    letter-spacing: normal;
+    color: var(--color-neutral-400);
+}
+
+.otpInput:focus {
+    border-color: var(--color-text-main);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.otpHint {
+    color: var(--color-neutral-500);
+    font-size: var(--font-size-xs);
 }

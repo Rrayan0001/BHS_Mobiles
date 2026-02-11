@@ -37,7 +37,8 @@
 /* Variants */
 .primary {
     background: var(--color-primary);
-    color: var(--color-white);
+    color: var(--color-white, #ffffff);
+    font-weight: 600;
 }
 
 .primary:hover:not(:disabled) {
@@ -60,7 +61,7 @@
 .outline {
     background: transparent;
     color: var(--color-primary);
-    border: 2px solid var(--color-primary);
+    border: 2px solid var(--color-neutral-300);
 }
 
 .outline:hover:not(:disabled) {

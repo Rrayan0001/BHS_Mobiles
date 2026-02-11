@@ -8,28 +8,7 @@ import styles from './page.module.css'
 
 export default function SavedItemsPage() {
     // Mock data
-    const savedProducts = [
-        {
-            id: 'prod_1',
-            title: 'iPhone 13 128GB - Midnight',
-            price: 45999,
-            compare_at_price: 59900,
-            condition_grade: 'A',
-            stock_quantity: 5,
-            description: 'Excellent condition iPhone 13.',
-            images: [{ url: '/placeholder.jpg', alt: 'iPhone 13' }]
-        },
-        {
-            id: 'prod_2',
-            title: 'Samsung Galaxy S21 FE 5G',
-            price: 29999,
-            compare_at_price: 49999,
-            condition_grade: 'B',
-            stock_quantity: 0,
-            description: 'Good condition with minor scratches.',
-            images: [{ url: '/placeholder.jpg', alt: 'Samsung S21' }]
-        }
-    ]
+    const savedProducts: any[] = []
 
     if (savedProducts.length === 0) {
         return (

@@ -27,31 +27,6 @@
     margin: 0;
 }
 
-.headerActions {
-    display: flex;
-    gap: 12px;
-}
-
-.refreshBtn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 18px;
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.refreshBtn:hover {
-    background: #f9fafb;
-    border-color: #d1d5db;
-}
-
 /* ===== STATS GRID ===== */
 .statsGrid {
     display: grid;
@@ -297,24 +272,69 @@
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .dashboard {
-        padding: 20px 16px;
+        padding: 16px;
     }
 
     .header {
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
     }
 
     .title {
-        font-size: 24px;
+        font-size: 22px;
+    }
+
+    .subtitle {
+        font-size: 13px;
     }
 
     .statsGrid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .statCard {
+        padding: 14px;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .statIcon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .statValue {
+        font-size: 22px;
+    }
+
+    .statLabel {
+        font-size: 11px;
     }
 
     .quickActions {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .quickAction {
+        padding: 14px;
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+
+    .actionIcon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .actionLabel {
+        font-size: 12px;
+    }
+
+    .sectionTitle {
+        font-size: 16px;
     }
 
     .table {
@@ -323,6 +343,6 @@
 
     .table th,
     .table td {
-        padding: 12px;
+        padding: 10px 8px;
     }
 }

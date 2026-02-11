@@ -17,6 +17,7 @@ interface AuthContextType {
     session: unknown | null
     loading: boolean
     signUp: (email: string, password: string, name?: string, phone?: string) => Promise<{ error: string | null }>
+    verifyOtp: (email: string, otp: string) => Promise<{ error: string | null }>
     signIn: (email: string, password: string) => Promise<{ error: string | null }>
     signOut: () => Promise<void>
     isAuthenticated: boolean
@@ -74,6 +75,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { error: null }
     }
 
+    const verifyOtp = async (email: string, otp: string) => {
+        if (isSupabaseConfigured()) {
+            try {
+                const response = await fetch('/api/auth/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp })
+                })
+                const data = await response.json()
+
+                if (!response.ok) {
+                    return { error: data.error || 'OTP verification failed' }
+                }
+
+                if (data.user) {
+                    setUser(data.user)
+                    setSession(data.session)
+                }
+
+                return { error: null }
+            } catch {
+                return { error: 'Network error. Please try again.' }
+            }
+        }
+
+        // Mock OTP verification for frontend showcase
+        return { error: null }
+    }
+
     const signIn = async (email: string, password: string) => {
         // If Supabase is configured, try real signin
         if (isSupabaseConfigured()) {
@@ -128,6 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             session,
             loading,
             signUp,
+            verifyOtp,
             signIn,
             signOut,
             isAuthenticated: !!user

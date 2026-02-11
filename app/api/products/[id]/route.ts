@@ -1,73 +1,61 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-// GET - Fetch single product by ID
+// GET - Fetch single product by Slug or ID
 export async function GET(
     request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: { params: Promise<{ id: string }> } // 'id' here captures the last segment, which is the slug
 ) {
     try {
         const supabase = await createClient()
-        const { id } = await params
+        const { id: slugOrId } = await params
 
-        const { data: product, error } = await supabase
+        // Try to find by slug first (since URLs use slugs)
+        let query = supabase
             .from('products')
             .select(`
-                id,
-                sku,
-                title,
-                description,
-                price,
-                compare_at_price,
-                stock_quantity,
-                condition_grade,
-                warranty_months,
-                status,
-                created_at,
-                updated_at,
-                subcategory_id,
-                subcategories (
-                    id,
-                    name,
-                    slug,
-                    description,
-                    category_id,
-                    categories (
-                        id,
-                        name,
-                        slug
-                    )
-                ),
-                product_images (
-                    id,
-                    url,
-                    alt_text,
-                    is_primary,
-                    sort_order
-                ),
-                product_attributes (
-                    id,
-                    value,
-                    attribute_definition_id,
-                    attribute_definitions (
-                        name,
-                        label,
-                        type
-                    )
-                )
+                *,
+                category:categories(id, name, display_name, slug),
+                specifications:product_specifications(spec_name, spec_value)
             `)
-            .eq('id', id)
-            .eq('status', 'published')
+            .eq('slug', slugOrId)
             .single()
 
-        if (error) {
-            if (error.code === 'PGRST116') {
-                return NextResponse.json({ error: 'Product not found' }, { status: 404 })
-            }
-            return NextResponse.json({ error: error.message }, { status: 500 })
+        let { data: product, error } = await query
+
+        // If not found by slug, and it looks like a UUID, try by ID
+        if (error && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slugOrId)) {
+            const idQuery = supabase
+                .from('products')
+                .select(`
+                    *,
+                    category:categories(id, name, display_name, slug),
+                    specifications:product_specifications(spec_name, spec_value)
+                `)
+                .eq('id', slugOrId)
+                .single()
+
+            const result = await idQuery
+            product = result.data
+            error = result.error
         }
 
-        return NextResponse.json({ product }, { status: 200 })
+        if (error || !product) {
+            return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+        }
+
+        // Return standardized product object
+        return NextResponse.json({
+            product: {
+                ...product,
+                // Ensure specifications are formatted correctly if needed
+                attributes: product.specifications?.map((s: any) => ({
+                    label: s.spec_name,
+                    value: s.spec_value
+                })) || []
+            }
+        }, { status: 200 })
+
     } catch (error) {
         console.error('Product API error:', error)
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

@@ -7,11 +7,12 @@ import { useAuth } from '@/contexts/AuthContext'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
-import styles from '../login/page.module.css' // Reuse login styles
+import styles from '../login/page.module.css'
 
 export default function RegisterPage() {
     const router = useRouter()
-    const { signUp } = useAuth()
+    const { signUp, verifyOtp } = useAuth()
+    const [step, setStep] = useState<'form' | 'otp'>('form')
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -19,6 +20,7 @@ export default function RegisterPage() {
         password: '',
         confirmPassword: '',
     })
+    const [otp, setOtp] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -50,17 +52,102 @@ export default function RegisterPage() {
             formData.phone
         )
 
+        if (error) {
+            setError(error)
+            setLoading(false)
+        } else {
+            setLoading(false)
+            setStep('otp')
+        }
+    }
 
+    const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/\D/g, '').slice(0, 8)
+        setOtp(value)
+    }
+
+    const handleVerifyOtp = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setLoading(true)
+        setError(null)
+
+        const otpString = otp
+        if (otpString.length !== 8) {
+            setError('Please enter the complete 8-digit OTP')
+            setLoading(false)
+            return
+        }
+
+        const { error } = await verifyOtp(formData.email, otpString)
 
         if (error) {
             setError(error)
             setLoading(false)
         } else {
-            // Redirect to login with success message
             router.push('/auth/login?registered=true')
         }
     }
 
+    // OTP Step
+    if (step === 'otp') {
+        return (
+            <div className={styles.page}>
+                <div className="container">
+                    <div className={styles.authWrapper}>
+                        <Card padding="lg" className={styles.authCard}>
+                            <div className={styles.header}>
+                                <div className={styles.otpIcon}>✉️</div>
+                                <h1 className={styles.title}>Verify Email</h1>
+                                <p className={styles.subtitle}>
+                                    We&apos;ve sent an 8-digit code to
+                                </p>
+                                <p className={styles.otpEmail}>{formData.email}</p>
+                            </div>
+
+                            {error && (
+                                <div className={styles.errorAlert}>
+                                    {error}
+                                </div>
+                            )}
+
+                            <form onSubmit={handleVerifyOtp} className={styles.form}>
+                                <div className={styles.otpContainer}>
+                                    <input
+                                        type="text"
+                                        inputMode="numeric"
+                                        maxLength={8}
+                                        value={otp}
+                                        onChange={handleOtpChange}
+                                        className={styles.otpInput}
+                                        placeholder="Enter 8-digit code"
+                                        autoFocus
+                                    />
+                                </div>
+
+                                <Button
+                                    type="submit"
+                                    variant="primary"
+                                    size="lg"
+                                    fullWidth
+                                    loading={loading}
+                                >
+                                    Verify & Create Account
+                                </Button>
+                            </form>
+
+                            <div className={styles.footer} style={{ marginTop: '1.5rem' }}>
+                                <p className={styles.otpHint}>
+                                    Didn&apos;t receive the code? Check your spam folder.
+                                </p>
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    // Registration Form Step
     return (
         <div className={styles.page}>
             <div className="container">

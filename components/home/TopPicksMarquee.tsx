@@ -4,62 +4,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import Link from 'next/link'
 import styles from './TopPicksMarquee.module.css'
 
-const products = [
-    {
-        id: 'tp1',
-        name: 'Samsung S24 Ultra - 256GB',
-        price: 68999,
-        priceDisplay: '68,999',
-        oldPrice: '1,03,499',
-        discount: '50% Off',
-        bgColor: '#ffccb3',
-    },
-    {
-        id: 'tp2',
-        name: 'Samsung S25 Ultra - 256GB',
-        price: 82999,
-        priceDisplay: '82,999',
-        oldPrice: '1,24,499',
-        discount: '50% Off',
-        bgColor: '#e6ccff',
-    },
-    {
-        id: 'tp3',
-        name: 'iPhone 17 - 256GB',
-        price: 74999,
-        priceDisplay: '74,999',
-        oldPrice: '1,04,999',
-        discount: '40% Off',
-        bgColor: '#ffccb3',
-    },
-    {
-        id: 'tp4',
-        name: 'Watch Series Ultra 3 (BLACK EDIT...)',
-        price: 56999,
-        priceDisplay: '56,999',
-        oldPrice: '79,799',
-        discount: '40% Off',
-        bgColor: '#ffccb3',
-    },
-    {
-        id: 'tp5',
-        name: 'Watch Series Ultra',
-        price: 42999,
-        priceDisplay: '42,999',
-        oldPrice: '60,199',
-        discount: '40% Off',
-        bgColor: '#e6ccff',
-    },
-    {
-        id: 'tp6',
-        name: 'AirPods Pro 2',
-        price: 18999,
-        priceDisplay: '18,999',
-        oldPrice: '26,900',
-        discount: '30% Off',
-        bgColor: '#d4f672',
-    },
-]
+const products: any[] = []
 
 export default function TopPicksMarquee() {
     const scrollRef = useRef<HTMLDivElement>(null)

@@ -1,39 +1,62 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { useCart } from '@/contexts/CartContext'
 import styles from './products.module.css'
 
-// Mock product data - replace with real data from Supabase
-const products = [
-    { id: 'p1', name: 'Watch Ultra 2 - GPS + Cellular', price: 79999, oldPrice: 89999, image: '⌚', category: 'Watch', variant: '49mm' },
-    { id: 'p2', name: 'Watch Series 10 - GPS + Cellular', price: 54999, oldPrice: 64999, image: '⌚', category: 'Watch', variant: '46mm' },
-    { id: 'p3', name: 'iPhone 16 - 256GB', price: 79999, oldPrice: 99999, image: '📱', category: 'iPhone', variant: '256GB' },
-    { id: 'p4', name: 'Watch Series 9 - GPS + Cellular', price: 47999, oldPrice: 57999, image: '⌚', category: 'Watch', variant: '45mm' },
-    { id: 'p5', name: 'iPhone 13 Pro - 256GB', price: 59999, oldPrice: 79999, image: '📱', category: 'iPhone', variant: '256GB' },
-    { id: 'p6', name: 'Watch Ultra 2', price: 64999, oldPrice: 74999, image: '⌚', category: 'Watch', variant: '49mm' },
-    { id: 'p7', name: 'iPhone 15 Pro - 256GB', price: 89999, oldPrice: 119999, image: '📱', category: 'iPhone', variant: '256GB' },
-    { id: 'p8', name: 'iPhone 14 - 128GB', price: 54999, oldPrice: 69999, image: '📱', category: 'iPhone', variant: '128GB' },
-    { id: 'p9', name: 'iPhone 15 Pro - 512GB', price: 109999, oldPrice: 139999, image: '📱', category: 'iPhone', variant: '512GB' },
-    { id: 'p10', name: 'Watch SE (2nd Gen) - GPS + WiFi + BT + Cellular', price: 34999, oldPrice: 44999, image: '⌚', category: 'Watch', variant: '44mm' },
-    { id: 'p11', name: 'Samsung S24 Ultra - 256GB', price: 84999, oldPrice: 109999, image: '📱', category: 'Samsung', variant: '256GB' },
-    { id: 'p12', name: 'iPhone 15 - 256GB', price: 74999, oldPrice: 94999, image: '📱', category: 'iPhone', variant: '256GB' },
-    { id: 'p13', name: 'Samsung S24 Ultra - 512GB', price: 94999, oldPrice: 119999, image: '📱', category: 'Samsung', variant: '512GB' },
-    { id: 'p14', name: 'iPhone 16 Pro - 256GB', price: 119999, oldPrice: 149999, image: '📱', category: 'iPhone', variant: '256GB' },
-    { id: 'p15', name: 'iPhone 15 Pro - 256GB', price: 89999, oldPrice: 119999, image: '📱', category: 'iPhone', variant: '256GB' },
-    { id: 'p16', name: 'iPhone 7 Plus - 256GB', price: 19999, oldPrice: 29999, image: '📱', category: 'iPhone', variant: '256GB' },
-]
+interface Product {
+    id: string
+    title: string
+    slug: string
+    price: number
+    compare_price: number | null
+    stock: number
+    condition: string
+    status: string
+    images: string[]
+    category: {
+        id: string
+        name: string
+        display_name: string
+        slug: string
+    } | null
+}
 
 export default function ProductsPage() {
     const { addItem } = useCart()
+    const [products, setProducts] = useState<Product[]>([])
+    const [loading, setLoading] = useState(true)
+    const [sortBy, setSortBy] = useState('newest')
 
-    const handleAddToCart = (product: typeof products[0]) => {
+    useEffect(() => {
+        fetchProducts()
+    }, [sortBy])
+
+    const fetchProducts = async () => {
+        try {
+            setLoading(true)
+            const sortParam = sortBy === 'price_asc' ? 'sort=price&order=asc'
+                : sortBy === 'price_desc' ? 'sort=price&order=desc'
+                    : 'sort=created_at&order=desc'
+
+            const response = await fetch(`/api/products?${sortParam}`)
+            const data = await response.json()
+            setProducts(data.products || [])
+        } catch (error) {
+            console.error('Failed to fetch products:', error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleAddToCart = (product: Product) => {
         addItem({
             id: product.id,
-            name: product.name,
+            name: product.title,
             price: product.price,
-            image: product.image,
-            variant: product.variant
+            image: product.images?.[0] || '/placeholder.png',
+            variant: ''
         })
     }
 
@@ -51,12 +74,19 @@ export default function ProductsPage() {
             <div className={styles.filtersSection}>
                 <div className="container">
                     <div className={styles.filtersBar}>
+                        <p style={{ color: 'var(--color-neutral-600)', fontSize: '0.9rem' }}>
+                            {loading ? 'Loading...' : `${products.length} products found`}
+                        </p>
                         <div className={styles.sortBy}>
                             <label>Sort by:</label>
-                            <select className={styles.select}>
-                                <option>Price: Low to High</option>
-                                <option>Price: High to Low</option>
-                                <option>Newest First</option>
+                            <select
+                                className={styles.select}
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value)}
+                            >
+                                <option value="newest">Newest First</option>
+                                <option value="price_asc">Price: Low to High</option>
+                                <option value="price_desc">Price: High to Low</option>
                             </select>
                         </div>
                     </div>
@@ -65,31 +95,79 @@ export default function ProductsPage() {
 
             {/* Products Grid */}
             <div className="container">
-                <div className={styles.productsGrid}>
-                    {products.map((product) => (
-                        <div key={product.id} className={styles.productCard}>
-                            <div className={styles.wishlistIcon}>♡</div>
+                {loading ? (
+                    <div style={{ textAlign: 'center', padding: '4rem 2rem', color: 'var(--color-neutral-500)' }}>
+                        Loading products...
+                    </div>
+                ) : products.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📦</div>
+                        <h3 style={{ marginBottom: '0.5rem', color: 'var(--color-neutral-800)' }}>No products yet</h3>
+                        <p style={{ color: 'var(--color-neutral-500)' }}>Check back soon for new products!</p>
+                    </div>
+                ) : (
+                    <div className={styles.productsGrid}>
+                        {products.map((product) => {
+                            const discount = product.compare_price
+                                ? Math.round(((product.compare_price - product.price) / product.compare_price) * 100)
+                                : 0
 
-                            <div className={styles.productImage}>
-                                <span style={{ fontSize: '4rem' }}>{product.image}</span>
-                            </div>
+                            return (
+                                <div key={product.id} className={styles.productCard}>
+                                    <Link href={`/product/${product.slug || product.id}`}>
+                                        <div className={styles.productImage}>
+                                            {product.images && product.images.length > 0 ? (
+                                                <img
+                                                    src={product.images[0]}
+                                                    alt={product.title}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                                                />
+                                            ) : (
+                                                <span style={{ fontSize: '4rem' }}>📱</span>
+                                            )}
+                                            {discount > 0 && (
+                                                <span style={{
+                                                    position: 'absolute',
+                                                    top: '8px',
+                                                    right: '8px',
+                                                    background: '#ef4444',
+                                                    color: 'white',
+                                                    padding: '2px 8px',
+                                                    borderRadius: '4px',
+                                                    fontSize: '0.75rem',
+                                                    fontWeight: '600'
+                                                }}>
+                                                    {discount}% OFF
+                                                </span>
+                                            )}
+                                        </div>
+                                    </Link>
 
-                            <div className={styles.productInfo}>
-                                <h3 className={styles.productName}>{product.name}</h3>
-                                <div className={styles.priceRow}>
-                                    <span className={styles.currentPrice}>Rs. {product.price.toLocaleString()}</span>
-                                    <span className={styles.oldPrice}>₹{product.oldPrice.toLocaleString()}</span>
+                                    <div className={styles.productInfo}>
+                                        <h3 className={styles.productName}>{product.title}</h3>
+                                        {product.category && (
+                                            <span style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                                {product.category.display_name || product.category.name}
+                                            </span>
+                                        )}
+                                        <div className={styles.priceRow}>
+                                            <span className={styles.currentPrice}>₹{product.price.toLocaleString()}</span>
+                                            {product.compare_price && product.compare_price > product.price && (
+                                                <span className={styles.oldPrice}>₹{product.compare_price.toLocaleString()}</span>
+                                            )}
+                                        </div>
+                                        <button
+                                            className={styles.addToCartBtn}
+                                            onClick={() => handleAddToCart(product)}
+                                        >
+                                            🛒 Add to cart
+                                        </button>
+                                    </div>
                                 </div>
-                                <button
-                                    className={styles.addToCartBtn}
-                                    onClick={() => handleAddToCart(product)}
-                                >
-                                    🛒 Add to cart
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                            )
+                        })}
+                    </div>
+                )}
             </div>
         </div>
     )

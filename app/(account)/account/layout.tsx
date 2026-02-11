@@ -1,4 +1,9 @@
+'use client'
+
+import React from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/AuthContext'
 import styles from './layout.module.css'
 
 // SVG Icons
@@ -52,12 +57,28 @@ export default function AccountLayout({
 }: {
     children: React.ReactNode
 }) {
+    const { user, signOut } = useAuth()
+    const router = useRouter()
+
+    const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'User'
+    const userEmail = user?.email || ''
+    const initials = userName
+        .split(' ')
+        .map((n: string) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
+
+    const handleLogout = async () => {
+        await signOut()
+        router.push('/')
+    }
+
     const navItems = [
         { label: 'Overview', href: '/account', icon: <OverviewIcon /> },
         { label: 'My Orders', href: '/account/orders', icon: <OrdersIcon /> },
         { label: 'Saved Items', href: '/account/saved', icon: <HeartIcon /> },
         { label: 'Addresses', href: '/account/addresses', icon: <LocationIcon /> },
-        { label: 'Profile Settings', href: '/account/profile', icon: <SettingsIcon /> },
     ]
 
     return (
@@ -66,10 +87,10 @@ export default function AccountLayout({
                 <div className={styles.grid}>
                     <aside className={styles.sidebar}>
                         <div className={styles.userInfo}>
-                            <div className={styles.avatar}>JD</div>
+                            <div className={styles.avatar}>{initials}</div>
                             <div className={styles.userDetails}>
-                                <div className={styles.userName}>John Doe</div>
-                                <div className={styles.userEmail}>john@example.com</div>
+                                <div className={styles.userName}>{userName}</div>
+                                <div className={styles.userEmail}>{userEmail}</div>
                             </div>
                         </div>
 
@@ -84,7 +105,10 @@ export default function AccountLayout({
                                     {item.label}
                                 </Link>
                             ))}
-                            <button className={`${styles.navItem} ${styles.logoutButton}`}>
+                            <button
+                                className={`${styles.navItem} ${styles.logoutButton}`}
+                                onClick={handleLogout}
+                            >
                                 <span className={styles.navIcon}><LogoutIcon /></span>
                                 Log Out
                             </button>
@@ -99,3 +123,4 @@ export default function AccountLayout({
         </div>
     )
 }
+

@@ -14,6 +14,8 @@ export interface Product {
     condition: 'A' | 'B' | 'C'
     status: 'active' | 'draft' | 'out_of_stock'
     images: string[]
+    is_featured?: boolean
+    featured_order?: number
 }
 
 export interface ProductSpecification {
@@ -72,7 +74,9 @@ export async function createProduct(
             stock: product.stock,
             condition: product.condition,
             status: product.status,
-            images: product.images
+            images: product.images,
+            is_featured: product.is_featured || false,
+            featured_order: product.featured_order || 0
         })
         .select()
         .single()

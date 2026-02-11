@@ -7,12 +7,11 @@
 }
 
 :root {
-  /* Brand Colors - Matching Reference */
-  --color-primary: #D4F672;
-  /* Lime Green Hero Background */
-  --color-primary-dark: #bce05a;
+  /* Brand Colors - Professional Black & White */
+  --color-primary: #1a1a2e;
+  --color-primary-dark: #000000;
+  --color-primary-light: #e8e8ee;
   --color-secondary: #000000;
-  /* Black buttons/text */
 
   /* Text Colors */
   --color-text-main: #000000;
@@ -23,6 +22,24 @@
   --color-background: #ffffff;
   --color-surface: #f5f5f5;
   --color-surface-hover: #e5e5e5;
+  --color-white: #ffffff;
+
+  /* Neutral Colors */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0a0a0a;
+
+  /* State Colors */
+  --color-error: #ef4444;
+  --color-error-light: #fee2e2;
 
   /* Typography */
   --font-serif: 'Times New Roman', serif;
@@ -43,6 +60,7 @@
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
+  --radius-xl: 16px;
   --radius-full: 9999px;
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -57,6 +75,8 @@ body {
   line-height: 1.5;
   margin: 0;
   -webkit-font-smoothing: antialiased;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 h1,
@@ -73,6 +93,20 @@ h6 {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--spacing-4);
+}
+
+/* Better mobile padding on small screens */
+@media (max-width: 640px) {
+  .container {
+    padding-left: var(--spacing-3);
+    padding-right: var(--spacing-3);
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* Typography Utilities */

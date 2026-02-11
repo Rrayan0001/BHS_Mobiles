@@ -4,14 +4,7 @@ import React from 'react'
 import { useCart } from '@/contexts/CartContext'
 import styles from './watch.module.css'
 
-const watches = [
-    { id: 'w1', name: 'Watch Ultra 2 - GPS + Cellular', price: 79999, oldPrice: 89999, image: '⌚', variant: '49mm' },
-    { id: 'w2', name: 'Watch Series 10 - GPS + Cellular', price: 54999, oldPrice: 64999, image: '⌚', variant: '46mm' },
-    { id: 'w3', name: 'Watch Series 9 - GPS + Cellular', price: 47999, oldPrice: 57999, image: '⌚', variant: '45mm' },
-    { id: 'w4', name: 'Watch Ultra 2', price: 64999, oldPrice: 74999, image: '⌚', variant: '49mm' },
-    { id: 'w5', name: 'Watch SE (2nd Gen) - GPS + Cellular', price: 34999, oldPrice: 44999, image: '⌚', variant: '44mm' },
-    { id: 'w6', name: 'Watch Series 8 - GPS', price: 39999, oldPrice: 49999, image: '⌚', variant: '45mm' },
-]
+const watches: any[] = []
 
 export default function WatchPage() {
     const { addItem } = useCart()

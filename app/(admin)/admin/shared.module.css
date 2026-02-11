@@ -213,6 +213,17 @@
     transform: scale(0.95);
 }
 
+.editBtn {
+    border-color: #c7d2fe;
+    color: #4f46e5;
+}
+
+.editBtn:hover {
+    background: #eef2ff;
+    border-color: #6366f1;
+    color: #4338ca;
+}
+
 .deleteBtn {
     border-color: #fecaca;
 }
@@ -275,15 +286,20 @@
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .page {
-        padding: 20px 16px;
+        padding: 16px;
     }
 
     .header {
         flex-direction: column;
+        gap: 12px;
     }
 
     .title {
-        font-size: 24px;
+        font-size: 22px;
+    }
+
+    .subtitle {
+        font-size: 13px;
     }
 
     .filters {
@@ -292,6 +308,19 @@
 
     .searchBox {
         max-width: 100%;
+        min-width: unset;
+    }
+
+    .filterSelect {
+        width: 100%;
+    }
+
+    /* Hide less essential columns on mobile */
+    .table th:nth-child(2),
+    .table td:nth-child(2),
+    .table th:nth-child(4),
+    .table td:nth-child(4) {
+        display: none;
     }
 
     .table {
@@ -300,10 +329,39 @@
 
     .table th,
     .table td {
-        padding: 12px;
+        padding: 10px 8px;
+    }
+
+    .productImage {
+        width: 36px;
+        height: 36px;
     }
 
     .productName {
-        max-width: 150px;
+        max-width: 120px;
+        font-size: 13px;
+    }
+
+    .productSku {
+        font-size: 10px;
+    }
+
+    .actions {
+        gap: 4px;
+    }
+
+    .actionBtn {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+    }
+
+    .statusSelect {
+        padding: 4px 6px;
+        font-size: 11px;
+    }
+
+    .emptyState {
+        padding: 40px 16px;
     }
 }

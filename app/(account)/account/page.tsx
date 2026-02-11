@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
+import { useAuth } from '@/contexts/AuthContext'
 import styles from './page.module.css'
 
 // SVG Icons
@@ -26,20 +27,12 @@ const MapPinIcon = () => (
     </svg>
 )
 
-const TruckIcon = () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
-        <rect x="1" y="3" width="15" height="13"></rect>
-        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-        <circle cx="5.5" cy="18.5" r="2.5"></circle>
-        <circle cx="18.5" cy="18.5" r="2.5"></circle>
-    </svg>
-)
-
 export default function AccountOverviewPage() {
-    const recentOrders = [
-        { id: 'ORD-12345', date: 'Oct 24, 2023', total: 45999, status: 'delivered', items: 1 },
-        { id: 'ORD-12346', date: 'Sep 15, 2023', total: 2499, status: 'delivered', items: 2 },
-    ]
+    const { user } = useAuth()
+
+    const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'User'
+    const userEmail = user?.email || ''
+    const userPhone = user?.user_metadata?.phone || 'Not provided'
 
     return (
         <div className={styles.page}>
@@ -52,7 +45,7 @@ export default function AccountOverviewPage() {
                     </div>
                     <div className={styles.statInfo}>
                         <span className={styles.statLabel}>Total Orders</span>
-                        <span className={styles.statValue}>12</span>
+                        <span className={styles.statValue}>0</span>
                     </div>
                 </div>
                 <div className={styles.statCard}>
@@ -61,7 +54,7 @@ export default function AccountOverviewPage() {
                     </div>
                     <div className={styles.statInfo}>
                         <span className={styles.statLabel}>Saved Items</span>
-                        <span className={styles.statValue}>4</span>
+                        <span className={styles.statValue}>0</span>
                     </div>
                 </div>
                 <div className={styles.statCard}>
@@ -70,7 +63,7 @@ export default function AccountOverviewPage() {
                     </div>
                     <div className={styles.statInfo}>
                         <span className={styles.statLabel}>Addresses</span>
-                        <span className={styles.statValue}>2</span>
+                        <span className={styles.statValue}>0</span>
                     </div>
                 </div>
             </div>
@@ -84,27 +77,13 @@ export default function AccountOverviewPage() {
                 </div>
 
                 <div className={styles.ordersList}>
-                    {recentOrders.map((order) => (
-                        <div key={order.id} className={styles.orderCard}>
-                            <div className={styles.orderHeader}>
-                                <div>
-                                    <div className={styles.orderId}>{order.id}</div>
-                                    <div className={styles.orderDate}>{order.date}</div>
-                                </div>
-                                <span className={styles.statusBadge}>{order.status}</span>
-                            </div>
-                            <div className={styles.orderFooter}>
-                                <div className={styles.orderTotal}>
-                                    <span>Total:</span>
-                                    <strong>₹{order.total.toLocaleString()}</strong>
-                                </div>
-                                <button className={styles.trackBtn}>
-                                    <TruckIcon />
-                                    Track Order
-                                </button>
-                            </div>
-                        </div>
-                    ))}
+                    <div className={styles.emptyState}>
+                        <PackageIcon />
+                        <p>No orders yet</p>
+                        <Link href="/products" className={styles.shopLink}>
+                            Start Shopping →
+                        </Link>
+                    </div>
                 </div>
             </div>
 
@@ -114,15 +93,15 @@ export default function AccountOverviewPage() {
                     <div className={styles.profileGrid}>
                         <div className={styles.profileItem}>
                             <label>NAME</label>
-                            <p>John Doe</p>
+                            <p>{userName}</p>
                         </div>
                         <div className={styles.profileItem}>
                             <label>EMAIL</label>
-                            <p>john.doe@example.com</p>
+                            <p>{userEmail}</p>
                         </div>
                         <div className={styles.profileItem}>
                             <label>PHONE</label>
-                            <p>+91 98765 43210</p>
+                            <p>{userPhone}</p>
                         </div>
                     </div>
                     <div className={styles.profileActions}>
@@ -135,3 +114,4 @@ export default function AccountOverviewPage() {
         </div>
     )
 }
+

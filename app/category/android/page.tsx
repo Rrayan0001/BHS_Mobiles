@@ -4,16 +4,7 @@ import React from 'react'
 import { useCart } from '@/contexts/CartContext'
 import styles from './android.module.css'
 
-const androidPhones = [
-    { id: 'an1', name: 'Samsung S24 Ultra - 256GB', price: 84999, oldPrice: 109999, image: '📱', variant: '256GB' },
-    { id: 'an2', name: 'Samsung S24 Ultra - 512GB', price: 94999, oldPrice: 119999, image: '📱', variant: '512GB' },
-    { id: 'an3', name: 'Samsung S23 Ultra - 256GB', price: 74999, oldPrice: 99999, image: '📱', variant: '256GB' },
-    { id: 'an4', name: 'Google Pixel 8 Pro - 256GB', price: 69999, oldPrice: 89999, image: '📱', variant: '256GB' },
-    { id: 'an5', name: 'Samsung S24 - 128GB', price: 54999, oldPrice: 74999, image: '📱', variant: '128GB' },
-    { id: 'an6', name: 'Google Pixel 8 - 128GB', price: 49999, oldPrice: 69999, image: '📱', variant: '128GB' },
-    { id: 'an7', name: 'Samsung S23 FE - 256GB', price: 44999, oldPrice: 59999, image: '📱', variant: '256GB' },
-    { id: 'an8', name: 'Google Pixel 7 Pro - 256GB', price: 54999, oldPrice: 74999, image: '📱', variant: '256GB' },
-]
+const androidPhones: any[] = []
 
 export default function AndroidPage() {
     const { addItem } = useCart()

@@ -2,12 +2,14 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
 import styles from './Header.module.css'
 
 export default function Header() {
+    const pathname = usePathname()
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
@@ -34,9 +36,24 @@ export default function Header() {
         return () => document.removeEventListener('mousedown', handleClickOutside)
     }, [setIsOpen])
 
+    // Prevent background scroll when mobile menu is open
+    useEffect(() => {
+        const previousOverflow = document.body.style.overflow
+        if (mobileMenuOpen) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = previousOverflow || ''
+        }
+
+        return () => {
+            document.body.style.overflow = previousOverflow
+        }
+    }, [mobileMenuOpen])
+
     const handleSignOut = async () => {
         await signOut()
         setIsUserMenuOpen(false)
+        setMobileMenuOpen(false)
     }
 
     const navItems: { name: string; href: string; special?: boolean }[] = [
@@ -73,7 +90,7 @@ export default function Header() {
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className={`${styles.navLink} ${item.special ? styles.specialLink : ''}`}
+                                className={`${styles.navLink} ${item.special ? styles.specialLink : ''} ${pathname === item.href ? styles.activeLink : ''}`}
                             >
                                 {item.special && <span className={styles.specialBadge}>GREAT DEALS</span>}
                                 {item.name}
@@ -136,7 +153,15 @@ export default function Header() {
                                                             ×
                                                         </button>
                                                         <div className={styles.cartItemImage}>
-                                                            <span>{item.image || '📱'}</span>
+                                                            {item.image ? (
+                                                                <img
+                                                                    src={item.image}
+                                                                    alt={item.name}
+                                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                                                                />
+                                                            ) : (
+                                                                <span>📱</span>
+                                                            )}
                                                         </div>
                                                         <div className={styles.cartItemInfo}>
                                                             <div className={styles.cartItemName}>{item.name}</div>
@@ -199,7 +224,7 @@ export default function Header() {
                                         </>
                                     ) : (
                                         <>
-                                            <Link href="/auth/login" className={styles.userMenuItem} onClick={() => setIsUserMenuOpen(false)}>
+                                            <Link href="/auth/login" className={styles.userMenuSignIn} onClick={() => setIsUserMenuOpen(false)}>
                                                 Sign In
                                             </Link>
                                             <Link href="/auth/register" className={styles.userMenuRegister} onClick={() => setIsUserMenuOpen(false)}>
@@ -214,6 +239,7 @@ export default function Header() {
                         {/* Mobile Menu Toggle */}
                         <button
                             className={styles.mobileToggle}
+                            aria-expanded={mobileMenuOpen}
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         >
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -239,6 +265,93 @@ export default function Header() {
                     </div>
                 )}
             </div>
+
+            {mobileMenuOpen && (
+                <div className={styles.mobileMenuOverlay} onClick={() => setMobileMenuOpen(false)}>
+                    <div className={styles.mobileMenu} onClick={(e) => e.stopPropagation()}>
+                        <div className={styles.mobileMenuHeader}>
+                            <div>
+                                <div className={styles.mobileMenuTitle}>Browse</div>
+                                <div className={styles.mobileMenuSubtitle}>Quick access to every category</div>
+                            </div>
+                            <button
+                                className={styles.mobileClose}
+                                onClick={() => setMobileMenuOpen(false)}
+                                aria-label="Close menu"
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        <div className={styles.mobileSearch}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" placeholder="Search phones, watches, accessories" />
+                        </div>
+
+                        <div className={styles.mobileNavList}>
+                            {navItems.map((item) => (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className={styles.mobileNavLink}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    <span>{item.name}</span>
+                                    <span className={styles.mobileNavArrow}>→</span>
+                                </Link>
+                            ))}
+                        </div>
+
+                        <div className={styles.mobileActions}>
+                            {isAuthenticated ? (
+                                <>
+                                    <Link
+                                        href="/account"
+                                        className={styles.mobileActionPrimary}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        My Account
+                                    </Link>
+                                    <button
+                                        className={styles.mobileActionGhost}
+                                        onClick={handleSignOut}
+                                    >
+                                        Sign Out
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link
+                                        href="/auth/login"
+                                        className={styles.mobileActionPrimary}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        Sign In
+                                    </Link>
+                                    <Link
+                                        href="/auth/register"
+                                        className={styles.mobileActionGhost}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        Create Account
+                                    </Link>
+                                </>
+                            )}
+
+                            <Link
+                                href="/cart"
+                                className={styles.mobileActionGhost}
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                Cart ({itemCount} items)
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            )}
         </header>
     )
 }

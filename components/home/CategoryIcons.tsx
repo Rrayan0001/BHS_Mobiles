@@ -66,17 +66,7 @@ const Icons = {
 }
 
 export default function CategoryIcons() {
-    const categories = [
-        { name: 'iPhone', icon: Icons.iPhone, slug: '/category/iphone' },
-        { name: 'Watch', icon: Icons.Watch, slug: '/category/iwatch' },
-        { name: 'Airpods', icon: Icons.Airpods, slug: '/category/airpods' },
-        { name: 'Samsung', icon: Icons.Samsung, slug: '/category/android' },
-        { name: 'Google Pixel', icon: Icons.Pixel, slug: '/category/android' },
-        { name: 'Used Phones', icon: Icons.Check, slug: '/products', special: true },
-        { name: 'Covers', icon: Icons.Cover, slug: '/category/accessories' },
-        { name: 'Watch Straps', icon: Icons.Strap, slug: '/category/accessories' },
-        { name: 'Chargers', icon: Icons.Charger, slug: '/category/accessories' },
-    ]
+    const categories: { name: string; icon: any; slug: string; special?: boolean }[] = []
 
     return (
         <section className={styles.section}>

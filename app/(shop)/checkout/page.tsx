@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
+import { useCart } from '@/contexts/CartContext'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
@@ -12,6 +13,7 @@ import styles from './page.module.css'
 export default function CheckoutPage() {
     const router = useRouter()
     const { user, isAuthenticated } = useAuth()
+    const { items: cartItems, subtotal, itemCount } = useCart()
     const [step, setStep] = useState<'shipping' | 'payment' | 'review'>('shipping')
 
     // Redirect if not authenticated
@@ -20,6 +22,13 @@ export default function CheckoutPage() {
             router.push('/auth/login?redirect=/checkout')
         }
     }, [isAuthenticated, router])
+
+    // Redirect if cart is empty
+    useEffect(() => {
+        if (itemCount === 0) {
+            router.push('/products')
+        }
+    }, [itemCount, router])
 
     // Form state
     const [email, setEmail] = useState(user?.email || '')
@@ -41,19 +50,6 @@ export default function CheckoutPage() {
     })
     const [sameAsShipping, setSameAsShipping] = useState(true)
     const [paymentMethod, setPaymentMethod] = useState<'cod' | 'online'>('online')
-
-    // Mock cart data
-    const cartItems = [
-        {
-            id: '1',
-            title: 'iPhone 13 Pro 128GB',
-            price: 45999,
-            quantity: 1,
-            condition_grade: 'A',
-        },
-    ]
-
-    const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
     const shipping = subtotal >= 50000 ? 0 : 200
     const tax = Math.round(subtotal * 0.18) // 18% GST
     const total = subtotal + shipping + tax
@@ -307,9 +303,9 @@ export default function CheckoutPage() {
                                 {cartItems.map((item) => (
                                     <div key={item.id} className={styles.summaryItem}>
                                         <div className={styles.summaryItemDetails}>
-                                            <span className={styles.summaryItemTitle}>{item.title}</span>
+                                            <span className={styles.summaryItemTitle}>{item.name}</span>
                                             <span className={styles.summaryItemMeta}>
-                                                Grade {item.condition_grade} • Qty: {item.quantity}
+                                                Qty: {item.quantity}
                                             </span>
                                         </div>
                                         <span className={styles.summaryItemPrice}>

@@ -160,3 +160,40 @@
         grid-template-columns: 1fr;
     }
 }
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .title {
+        font-size: 20px;
+    }
+
+    .headerActions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .specsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .mediaUpload {
+        padding: 24px 16px;
+    }
+
+    .card {
+        gap: 16px;
+    }
+
+    .cardTitle {
+        font-size: 16px;
+    }
+}

@@ -17,7 +17,7 @@ export default function RootLayout({
     const isAdminRoute = pathname?.startsWith('/admin')
 
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning>
             <body>
                 <AuthProvider>
                     <CartProvider>

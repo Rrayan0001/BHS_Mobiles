@@ -4,14 +4,7 @@ import React from 'react'
 import { useCart } from '@/contexts/CartContext'
 import styles from './airpods.module.css'
 
-const airpods = [
-    { id: 'ap1', name: 'AirPods Pro 2 - USB-C', price: 18999, oldPrice: 26900, image: '🎧', variant: 'USB-C' },
-    { id: 'ap2', name: 'AirPods 3rd Generation', price: 14999, oldPrice: 19900, image: '🎧', variant: '3rd Gen' },
-    { id: 'ap3', name: 'AirPods Max - Silver', price: 49999, oldPrice: 59900, image: '🎧', variant: 'Silver' },
-    { id: 'ap4', name: 'AirPods 2nd Generation', price: 9999, oldPrice: 14900, image: '🎧', variant: '2nd Gen' },
-    { id: 'ap5', name: 'AirPods Pro 2 - Lightning', price: 17999, oldPrice: 24900, image: '🎧', variant: 'Lightning' },
-    { id: 'ap6', name: 'AirPods Max - Space Gray', price: 49999, oldPrice: 59900, image: '🎧', variant: 'Space Gray' },
-]
+const airpods: any[] = []
 
 export default function AirpodsPage() {
     const { addItem } = useCart()

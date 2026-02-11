@@ -37,6 +37,8 @@ export async function POST(request: NextRequest) {
             condition,
             status,
             images,
+            is_featured,
+            featured_order,
             specifications
         } = body
 
@@ -56,7 +58,9 @@ export async function POST(request: NextRequest) {
                 stock: parseInt(stock),
                 condition,
                 status,
-                images: images || []
+                images: images || [],
+                is_featured,
+                featured_order
             },
             specifications || []
         )

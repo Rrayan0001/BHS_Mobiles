@@ -129,9 +129,9 @@ export default function NewProductPage() {
                     description: formData.description,
                     category_id: category,
                     sku: formData.sku,
-                    price: formData.price,
-                    compare_price: formData.comparePrice || null,
-                    stock: formData.stock,
+                    price: parseFloat(formData.price) || 0,
+                    compare_price: formData.comparePrice ? parseFloat(formData.comparePrice) : null,
+                    stock: parseInt(formData.stock) || 0,
                     condition: formData.condition,
                     status: 'active',
                     images: uploadedImages,
@@ -239,166 +239,192 @@ export default function NewProductPage() {
                     <Card padding="lg" className={styles.card}>
                         <h2 className={styles.cardTitle}>Specifications</h2>
                         <div className={styles.specsGrid}>
-                            {(category === 'phones' || category === 'smartphones') && (
-                                <>
-                                    <Input
-                                        label="Brand"
-                                        value={specs.brand || ''}
-                                        onChange={(e) => handleSpecChange('brand', e.target.value)}
-                                        placeholder="e.g. Apple, Samsung, OnePlus"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Model"
-                                        value={specs.model || ''}
-                                        onChange={(e) => handleSpecChange('model', e.target.value)}
-                                        placeholder="e.g. iPhone 13 Pro"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Year"
-                                        value={specs.year || ''}
-                                        onChange={(e) => handleSpecChange('year', e.target.value)}
-                                        placeholder="e.g. 2023"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Storage"
-                                        value={specs.storage || ''}
-                                        onChange={(e) => handleSpecChange('storage', e.target.value)}
-                                        placeholder="e.g. 128GB, 256GB"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Color"
-                                        value={specs.color || ''}
-                                        onChange={(e) => handleSpecChange('color', e.target.value)}
-                                        placeholder="e.g. Sierra Blue, Midnight"
-                                        fullWidth
-                                    />
-                                </>
-                            )}
-                            {category === 'watches' && (
-                                <>
-                                    <Input
-                                        label="Brand"
-                                        value={specs.brand || ''}
-                                        onChange={(e) => handleSpecChange('brand', e.target.value)}
-                                        placeholder="e.g. Apple, Samsung, Fitbit"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Model"
-                                        value={specs.model || ''}
-                                        onChange={(e) => handleSpecChange('model', e.target.value)}
-                                        placeholder="e.g. Apple Watch Series 8"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Size"
-                                        value={specs.size || ''}
-                                        onChange={(e) => handleSpecChange('size', e.target.value)}
-                                        placeholder="e.g. 41mm, 45mm"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Color/Band"
-                                        value={specs.color || ''}
-                                        onChange={(e) => handleSpecChange('color', e.target.value)}
-                                        placeholder="e.g. Starlight Aluminum"
-                                        fullWidth
-                                    />
-                                </>
-                            )}
-                            {category === 'laptops' && (
-                                <>
-                                    <Input
-                                        label="Brand"
-                                        value={specs.brand || ''}
-                                        onChange={(e) => handleSpecChange('brand', e.target.value)}
-                                        placeholder="e.g. Apple, Dell, HP"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Model"
-                                        value={specs.model || ''}
-                                        onChange={(e) => handleSpecChange('model', e.target.value)}
-                                        placeholder="e.g. MacBook Air M1"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Processor"
-                                        value={specs.processor || ''}
-                                        onChange={(e) => handleSpecChange('processor', e.target.value)}
-                                        placeholder="e.g. M1, Intel i7"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="RAM"
-                                        value={specs.ram || ''}
-                                        onChange={(e) => handleSpecChange('ram', e.target.value)}
-                                        placeholder="e.g. 8GB, 16GB"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Storage"
-                                        value={specs.storage || ''}
-                                        onChange={(e) => handleSpecChange('storage', e.target.value)}
-                                        placeholder="e.g. 256GB SSD"
-                                        fullWidth
-                                    />
-                                </>
-                            )}
-                            {category === 'airpods' && (
-                                <>
-                                    <Input
-                                        label="Brand"
-                                        value={specs.brand || ''}
-                                        onChange={(e) => handleSpecChange('brand', e.target.value)}
-                                        placeholder="e.g. Apple"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Model"
-                                        value={specs.model || ''}
-                                        onChange={(e) => handleSpecChange('model', e.target.value)}
-                                        placeholder="e.g. AirPods Pro 2nd Gen"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Features"
-                                        value={specs.features || ''}
-                                        onChange={(e) => handleSpecChange('features', e.target.value)}
-                                        placeholder="e.g. Noise Cancellation, Wireless Charging"
-                                        fullWidth
-                                    />
-                                </>
-                            )}
-                            {(category === 'chargers' || category === 'screen-protectors' || category === 'back-skins') && (
-                                <>
-                                    <Input
-                                        label="Brand"
-                                        value={specs.brand || ''}
-                                        onChange={(e) => handleSpecChange('brand', e.target.value)}
-                                        placeholder="e.g. Apple, Anker, Generic"
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Type/Model"
-                                        value={specs.type || ''}
-                                        onChange={(e) => handleSpecChange('type', e.target.value)}
-                                        placeholder={category === 'chargers' ? 'e.g. 20W USB-C' : category === 'screen-protectors' ? 'e.g. Tempered Glass, Bulletproof' : 'e.g. Matte, Carbon Fiber'}
-                                        fullWidth
-                                    />
-                                    <Input
-                                        label="Compatible With"
-                                        value={specs.compatibility || ''}
-                                        onChange={(e) => handleSpecChange('compatibility', e.target.value)}
-                                        placeholder="e.g. iPhone 13, All iPhones"
-                                        fullWidth
-                                    />
-                                </>
-                            )}
+                            {(() => {
+                                const selectedCategory = categories.find(c => c.id === category)
+                                const slug = selectedCategory?.name || '' // using name/slug from DB
+
+                                if (slug === 'phones' || slug === 'smartphones') {
+                                    return (
+                                        <>
+                                            <Input
+                                                label="Brand"
+                                                value={specs.brand || ''}
+                                                onChange={(e) => handleSpecChange('brand', e.target.value)}
+                                                placeholder="e.g. Apple, Samsung, OnePlus"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Model"
+                                                value={specs.model || ''}
+                                                onChange={(e) => handleSpecChange('model', e.target.value)}
+                                                placeholder="e.g. iPhone 13 Pro"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Year"
+                                                value={specs.year || ''}
+                                                onChange={(e) => handleSpecChange('year', e.target.value)}
+                                                placeholder="e.g. 2023"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Storage"
+                                                value={specs.storage || ''}
+                                                onChange={(e) => handleSpecChange('storage', e.target.value)}
+                                                placeholder="e.g. 128GB, 256GB"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Color"
+                                                value={specs.color || ''}
+                                                onChange={(e) => handleSpecChange('color', e.target.value)}
+                                                placeholder="e.g. Sierra Blue, Midnight"
+                                                fullWidth
+                                            />
+                                        </>
+                                    )
+                                }
+
+                                if (slug === 'watches') {
+                                    return (
+                                        <>
+                                            <Input
+                                                label="Brand"
+                                                value={specs.brand || ''}
+                                                onChange={(e) => handleSpecChange('brand', e.target.value)}
+                                                placeholder="e.g. Apple, Samsung, Fitbit"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Model"
+                                                value={specs.model || ''}
+                                                onChange={(e) => handleSpecChange('model', e.target.value)}
+                                                placeholder="e.g. Apple Watch Series 8"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Size"
+                                                value={specs.size || ''}
+                                                onChange={(e) => handleSpecChange('size', e.target.value)}
+                                                placeholder="e.g. 41mm, 45mm"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Color/Band"
+                                                value={specs.color || ''}
+                                                onChange={(e) => handleSpecChange('color', e.target.value)}
+                                                placeholder="e.g. Starlight Aluminum"
+                                                fullWidth
+                                            />
+                                        </>
+                                    )
+                                }
+
+                                if (slug === 'laptops') {
+                                    return (
+                                        <>
+                                            <Input
+                                                label="Brand"
+                                                value={specs.brand || ''}
+                                                onChange={(e) => handleSpecChange('brand', e.target.value)}
+                                                placeholder="e.g. Apple, Dell, HP"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Model"
+                                                value={specs.model || ''}
+                                                onChange={(e) => handleSpecChange('model', e.target.value)}
+                                                placeholder="e.g. MacBook Air M1"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Processor"
+                                                value={specs.processor || ''}
+                                                onChange={(e) => handleSpecChange('processor', e.target.value)}
+                                                placeholder="e.g. M1, Intel i7"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="RAM"
+                                                value={specs.ram || ''}
+                                                onChange={(e) => handleSpecChange('ram', e.target.value)}
+                                                placeholder="e.g. 8GB, 16GB"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Storage"
+                                                value={specs.storage || ''}
+                                                onChange={(e) => handleSpecChange('storage', e.target.value)}
+                                                placeholder="e.g. 256GB SSD"
+                                                fullWidth
+                                            />
+                                        </>
+                                    )
+                                }
+
+                                if (slug === 'airpods') {
+                                    return (
+                                        <>
+                                            <Input
+                                                label="Brand"
+                                                value={specs.brand || ''}
+                                                onChange={(e) => handleSpecChange('brand', e.target.value)}
+                                                placeholder="e.g. Apple"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Model"
+                                                value={specs.model || ''}
+                                                onChange={(e) => handleSpecChange('model', e.target.value)}
+                                                placeholder="e.g. AirPods Pro 2nd Gen"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Features"
+                                                value={specs.features || ''}
+                                                onChange={(e) => handleSpecChange('features', e.target.value)}
+                                                placeholder="e.g. Noise Cancellation, Wireless Charging"
+                                                fullWidth
+                                            />
+                                        </>
+                                    )
+                                }
+
+                                if (['chargers', 'screen-protectors', 'back-skins'].includes(slug)) {
+                                    return (
+                                        <>
+                                            <Input
+                                                label="Brand"
+                                                value={specs.brand || ''}
+                                                onChange={(e) => handleSpecChange('brand', e.target.value)}
+                                                placeholder="e.g. Apple, Anker, Generic"
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Type/Model"
+                                                value={specs.type || ''}
+                                                onChange={(e) => handleSpecChange('type', e.target.value)}
+                                                placeholder={slug === 'chargers' ? 'e.g. 20W USB-C' : slug === 'screen-protectors' ? 'e.g. Tempered Glass, Bulletproof' : 'e.g. Matte, Carbon Fiber'}
+                                                fullWidth
+                                            />
+                                            <Input
+                                                label="Compatible With"
+                                                value={specs.compatibility || ''}
+                                                onChange={(e) => handleSpecChange('compatibility', e.target.value)}
+                                                placeholder="e.g. iPhone 13, All iPhones"
+                                                fullWidth
+                                            />
+                                        </>
+                                    )
+                                }
+
+                                // Fallback
+                                return (
+                                    <div style={{ gridColumn: '1 / -1', color: 'var(--color-neutral-500)', fontSize: '0.9rem', fontStyle: 'italic' }}>
+                                        Select a category to view specific fields. If no specific fields appear, you can add generic details in the description.
+                                    </div>
+                                )
+                            })()}
                         </div>
                     </Card>
                 </div>
@@ -463,24 +489,26 @@ export default function NewProductPage() {
                         <h2 className={styles.cardTitle}>Pricing & Inventory</h2>
                         <div className={styles.formGroup}>
                             <Input
-                                label="Price (₹)"
-                                name="price"
+                                label="Sliced Price / MRP (₹)"
+                                name="comparePrice"
                                 type="number"
-                                placeholder="0.00"
-                                value={formData.price}
+                                placeholder="e.g. 18000"
+                                value={formData.comparePrice}
                                 onChange={handleInputChange}
-                                required
+                                helperText="Original price before discount (shown with strikethrough)"
                                 fullWidth
                             />
                         </div>
                         <div className={styles.formGroup}>
                             <Input
-                                label="Compare at Price (₹)"
-                                name="comparePrice"
+                                label="Discounted Price (₹)"
+                                name="price"
                                 type="number"
-                                placeholder="0.00"
-                                value={formData.comparePrice}
+                                placeholder="e.g. 15000"
+                                value={formData.price}
                                 onChange={handleInputChange}
+                                helperText="Final selling price the customer pays"
+                                required
                                 fullWidth
                             />
                         </div>
@@ -491,6 +519,7 @@ export default function NewProductPage() {
                                 placeholder="e.g. IP13-BLK"
                                 value={formData.sku}
                                 onChange={handleInputChange}
+                                helperText="Stock Keeping Unit: A unique ID to track this product"
                                 fullWidth
                             />
                         </div>

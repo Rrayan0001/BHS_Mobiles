@@ -203,26 +203,70 @@ export default function CategoryManagementPage() {
 
             {/* Modal */}
             {showModal && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(0, 0, 0, 0.5)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 1000
-                }}>
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 1000
+                    }}
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) {
+                            setShowModal(false)
+                            setEditingCategory(null)
+                        }
+                    }}
+                >
                     <div style={{
                         background: 'white',
                         borderRadius: '12px',
                         padding: '32px',
                         maxWidth: '500px',
                         width: '100%',
-                        margin: '0 20px'
+                        margin: '0 20px',
+                        position: 'relative'
                     }}>
+                        <button
+                            onClick={() => {
+                                setShowModal(false)
+                                setEditingCategory(null)
+                            }}
+                            style={{
+                                position: 'absolute',
+                                top: '16px',
+                                right: '16px',
+                                background: 'transparent',
+                                border: 'none',
+                                cursor: 'pointer',
+                                color: '#6b7280',
+                                padding: '4px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: '4px',
+                                transition: 'background 0.2s, color 0.2s'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.background = '#f3f4f6'
+                                e.currentTarget.style.color = '#111827'
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.background = 'transparent'
+                                e.currentTarget.style.color = '#6b7280'
+                            }}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+
                         <h2 style={{ margin: '0 0 24px 0', fontSize: '20px', fontWeight: '600' }}>
                             {editingCategory ? 'Edit Category' : 'Add New Category'}
                         </h2>
