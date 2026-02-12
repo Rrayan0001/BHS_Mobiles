@@ -1,0 +1,380 @@
+/* Reviews Page Styles */
+
+.page {
+    padding: 32px 40px;
+    max-width: 1800px;
+}
+
+/* ===== HEADER ===== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    gap: 16px;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4px 0;
+    letter-spacing: -0.3px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* ===== FILTER TABS ===== */
+.filterBar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+    background: #f3f4f6;
+    padding: 4px;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+.filterBtn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
+    color: #6b7280;
+}
+
+.filterBtn:hover {
+    color: #111827;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.filterBtnActive {
+    background: white;
+    color: #111827;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    font-weight: 600;
+}
+
+/* ===== REVIEW CARDS ===== */
+.reviewsList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.reviewCard {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s;
+}
+
+.reviewCard:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.reviewCardPending {
+    border-left: 4px solid #f59e0b;
+}
+
+.reviewCardApproved {
+    border-left: 4px solid #10b981;
+}
+
+.reviewCardRejected {
+    border-left: 4px solid #ef4444;
+}
+
+.reviewHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.reviewMeta {
+    flex: 1;
+    min-width: 0;
+}
+
+.customerName {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 4px 0;
+}
+
+.stars {
+    font-size: 16px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+}
+
+.productLabel {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.productLabelName {
+    color: #374151;
+    font-weight: 500;
+}
+
+.reviewDate {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 4px;
+}
+
+/* ===== ACTIONS ===== */
+.reviewActions {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    flex-shrink: 0;
+}
+
+.approveBtn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #d1fae5;
+    color: #065f46;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.approveBtn:hover {
+    background: #a7f3d0;
+    transform: translateY(-1px);
+}
+
+.rejectBtn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fee2e2;
+    color: #991b1b;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.rejectBtn:hover {
+    background: #fecaca;
+    transform: translateY(-1px);
+}
+
+.deleteBtn {
+    padding: 6px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    display: inline-flex;
+    align-items: center;
+}
+
+.deleteBtn:hover {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+/* ===== REVIEW TEXT ===== */
+.reviewText {
+    margin: 12px 0 0 0;
+    padding: 14px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #f3f4f6;
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+}
+
+/* ===== STATUS BADGE ===== */
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 10px;
+}
+
+.statusPending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.statusApproved {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.statusRejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* ===== EMPTY STATE ===== */
+.emptyState {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.emptyIcon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.emptyTitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 8px 0;
+}
+
+.emptyText {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.loadingState {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .page {
+        padding: 16px;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .title {
+        font-size: 22px;
+    }
+
+    .filterBar {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .filterBtn {
+        padding: 6px 12px;
+        font-size: 12px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .reviewCard {
+        padding: 14px;
+    }
+
+    .reviewHeader {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .reviewActions {
+        width: 100%;
+    }
+
+    .approveBtn,
+    .rejectBtn {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+    .page {
+        padding: 12px;
+    }
+
+    .title {
+        font-size: 20px;
+    }
+
+    .filterBtn {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .reviewCard {
+        padding: 12px;
+    }
+
+    .customerName {
+        font-size: 14px;
+    }
+
+    .stars {
+        font-size: 14px;
+    }
+
+    .reviewText {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .approveBtn,
+    .rejectBtn {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+
+    .deleteBtn {
+        padding: 5px 8px;
+        font-size: 12px;
+    }
+
+    .emptyState {
+        padding: 40px 12px;
+    }
+
+    .emptyIcon {
+        font-size: 36px;
+    }
+
+    .emptyTitle {
+        font-size: 16px;
+    }
+}

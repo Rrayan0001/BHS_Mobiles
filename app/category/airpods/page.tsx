@@ -15,7 +15,10 @@ export default function AirpodsPage() {
             name: product.name,
             price: product.price,
             image: product.image,
-            variant: product.variant
+            variant: product.variant,
+            purchaseMode: 'multi_unit',
+            maxQuantity: typeof product.stock === 'number' ? Math.max(1, product.stock) : 10,
+            quantity: 1
         })
     }
 

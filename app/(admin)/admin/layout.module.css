@@ -3,39 +3,7 @@
 .layout {
     display: flex;
     min-height: 100vh;
-    background: #f8f9fc;
-}
-
-/* ===== SIDEBAR TOGGLE ===== */
-.sidebarToggle {
-    position: fixed;
-    top: 32px;
-    left: 320px;
-    /* Positioned in main content area when sidebar is open */
-    z-index: 50;
-    width: 44px;
-    height: 44px;
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: #6b7280;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.sidebarToggle:hover {
-    background: #f9fafb;
-    border-color: #6366f1;
-    color: #6366f1;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
-}
-
-.sidebarToggle:active {
-    transform: scale(0.95);
+    background: #f3f4f6;
 }
 
 /* ===== SIDEBAR ===== */
@@ -49,75 +17,6 @@
     height: 100vh;
     overflow-y: auto;
     z-index: 100;
-}
-
-/* ===== BOTTOM NAVIGATION (Mobile) ===== */
-.bottomNav {
-    display: none;
-    /* Hidden on desktop */
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-    .sidebar {
-        display: none;
-        /* Hide sidebar on mobile */
-    }
-
-    .main {
-        margin-left: 0;
-        margin-bottom: 70px;
-        /* Space for bottom nav */
-    }
-
-    .bottomNav {
-        display: flex;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 60px;
-        background: white;
-        border-top: 1px solid #e5e7eb;
-        z-index: 1000;
-        justify-content: space-around;
-        align-items: center;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-        padding-bottom: env(safe-area-inset-bottom);
-    }
-
-    .bottomNavItem {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        text-decoration: none;
-        color: #6b7280;
-        flex: 1;
-        height: 100%;
-    }
-
-    .bottomNavItem:active {
-        color: #6366f1;
-        background-color: #f9fafb;
-    }
-
-    .bottomNavIcon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .bottomNavIcon svg {
-        width: 20px;
-        height: 20px;
-    }
-
-    .bottomNavLabel {
-        font-size: 10px;
-        font-weight: 500;
-    }
 }
 
 .sidebarHeader {
@@ -171,49 +70,33 @@
     padding: 16px 12px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 8px;
+    /* Reduced gap */
     overflow-y: auto;
-}
-
-.navSection {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.navLabel {
-    font-size: 11px;
-    font-weight: 600;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0 12px 8px;
 }
 
 .navItem {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 12px;
-    border-radius: 8px;
+    padding: 12px 16px;
+    border-radius: 10px;
     text-decoration: none;
-    color: #6b7280;
-    font-size: 14px;
+    color: #4b5563;
+    /* Gray-600 */
+    font-size: 15px;
     font-weight: 500;
-    transition: all 0.15s ease;
-    position: relative;
+    transition: all 0.2s ease;
 }
 
 .navItem:hover {
-    background: #f3f4f6;
+    background: #f9fafb;
     color: #111827;
 }
 
-.navItem:active,
 .navItem.active {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    color: #ffffff;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+    background: #eef2ff;
+    color: #4f46e5;
 }
 
 .navIcon {
@@ -221,8 +104,12 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+}
+
+.navIcon svg {
+    stroke-width: 2px;
 }
 
 .navText {
@@ -296,37 +183,170 @@
     padding: 0;
 }
 
+/* ===== MOBILE HEADER ===== */
+.mobileHeader {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: white;
+    /* Matches layout bg in reference, or white */
+    padding: 0 20px;
+    z-index: 1000;
+    justify-content: space-between;
+    align-items: center;
+    /* Box shadow removed for cleaner look, or subtle */
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.mobileBrand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mobileLogo {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef2ff;
+    border-radius: 10px;
+}
+
+.mobileTitle {
+    display: flex;
+    flex-direction: column;
+}
+
+.mobileBrandName {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.2;
+}
+
+.mobileAdminBadge {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6366f1;
+    text-transform: uppercase;
+}
+
+.mobileActions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.mobileActionButton {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #374151;
+    position: relative;
+    cursor: pointer;
+}
+
+.notificationBadge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+}
+
+/* ===== BOTTOM NAVIGATION (Mobile) ===== */
+.bottomNav {
+    display: none;
+}
+
 /* ===== RESPONSIVE ===== */
-/* Superseded by media query above for bottom nav */
-/* @media (max-width: 1024px) {
+@media (max-width: 768px) {
     .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
+        display: none;
     }
 
-    .sidebar.open {
-        transform: translateX(0);
+    .mobileHeader {
+        display: flex;
     }
 
     .main {
         margin-left: 0;
+        margin-top: 64px;
+        /* Space for fixed header */
+        margin-bottom: 80px;
+        /* Space for bottom nav */
     }
-} */
 
-/* ===== SCROLLBAR STYLING ===== */
-.sidebar::-webkit-scrollbar {
-    width: 6px;
-}
+    .bottomNav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 70px;
+        background: white;
+        border-top: 1px solid #e5e7eb;
+        z-index: 1000;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 16px;
+        padding-bottom: env(safe-area-inset-bottom);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
 
-.sidebar::-webkit-scrollbar-track {
-    background: transparent;
-}
+    .bottomNavItem {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        text-decoration: none;
+        color: #9ca3af;
+        transition: all 0.2s ease;
+        padding: 8px;
+        flex: 1;
+    }
 
-.sidebar::-webkit-scrollbar-thumb {
-    background: #d1d5db;
-    border-radius: 3px;
-}
+    .bottomNavItem.active {
+        color: #6366f1;
+    }
 
-.sidebar::-webkit-scrollbar-thumb:hover {
-    background: #9ca3af;
+    .bottomNavIcon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bottomNavIcon svg {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2px;
+    }
+
+    .bottomNavItem.active .bottomNavIcon svg {
+        stroke-width: 2.5px;
+        fill: #eef2ff;
+        /* Subtle fill for active icon, optional */
+    }
+
+    .bottomNavLabel {
+        font-size: 10px;
+        font-weight: 500;
+        text-align: center;
+    }
 }

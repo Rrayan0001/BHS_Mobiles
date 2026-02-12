@@ -1,15 +1,43 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import styles from './page.module.css'
 
+interface Order {
+    id: string
+    order_number: string
+    customer: string
+    date: string
+    items: number
+    total: number
+    payment: string
+    payment_status: string
+    status: string
+}
+
 export default function AdminOrdersPage() {
     const [activeFilter, setActiveFilter] = useState('all')
+    const [orders, setOrders] = useState<Order[]>([])
+    const [loading, setLoading] = useState(true)
 
-    const orders: any[] = []
+    useEffect(() => {
+        fetchOrders()
+    }, [])
+
+    const fetchOrders = async () => {
+        try {
+            const response = await fetch('/api/admin/orders')
+            const data = await response.json()
+            setOrders(data.orders || [])
+        } catch (error) {
+            console.error('Failed to fetch orders:', error)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const filteredOrders = activeFilter === 'all'
         ? orders
@@ -56,7 +84,13 @@ export default function AdminOrdersPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredOrders.length === 0 ? (
+                        {loading ? (
+                            <tr>
+                                <td colSpan={8} style={{ textAlign: 'center', padding: '2rem' }}>
+                                    Loading orders...
+                                </td>
+                            </tr>
+                        ) : filteredOrders.length === 0 ? (
                             <tr>
                                 <td colSpan={8} style={{ textAlign: 'center', padding: '2rem' }}>
                                     No orders found
@@ -66,7 +100,7 @@ export default function AdminOrdersPage() {
                             filteredOrders.map((order) => (
                                 <tr key={order.id}>
                                     <td>
-                                        <span className={styles.orderId}>{order.id}</span>
+                                        <span className={styles.orderId}>{order.order_number}</span>
                                     </td>
                                     <td>
                                         <div className={styles.customerName}>{order.customer}</div>

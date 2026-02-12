@@ -15,7 +15,10 @@ export default function AndroidPage() {
             name: product.name,
             price: product.price,
             image: product.image,
-            variant: product.variant
+            variant: product.variant,
+            purchaseMode: 'single_unit',
+            maxQuantity: 1,
+            quantity: 1
         })
     }
 

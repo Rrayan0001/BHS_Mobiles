@@ -1,0 +1,187 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: #111111;
+}
+
+.headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.title {
+    margin: 0;
+    font-size: 1.75rem;
+    line-height: 1.2;
+    color: #111111;
+    font-family: var(--font-serif);
+}
+
+.metaText {
+    margin: 0.35rem 0 0;
+    color: #4b5563;
+    font-size: 0.92rem;
+}
+
+.detailsCard,
+.noticeCard {
+    border: 2px solid #111111;
+    border-radius: 12px;
+    background: repeating-linear-gradient(
+        135deg,
+        #ffffff,
+        #ffffff 8px,
+        #f5f5f5 8px,
+        #f5f5f5 16px
+    );
+}
+
+.summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.summaryItem {
+    border: 1px solid #111111;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0.65rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.summaryItem span {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #4b5563;
+}
+
+.summaryItem strong {
+    color: #111111;
+    font-size: 0.92rem;
+}
+
+.sectionTitle {
+    margin: 0 0 0.8rem;
+    font-size: 1.1rem;
+    color: #111111;
+}
+
+.itemList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.itemRow {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border: 1px solid #111111;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0.7rem;
+}
+
+.itemName {
+    margin: 0;
+    font-weight: 700;
+    color: #111111;
+    font-size: 0.95rem;
+}
+
+.itemMeta {
+    margin: 0.2rem 0 0;
+    color: #4b5563;
+    font-size: 0.8rem;
+}
+
+.itemValues {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.2rem;
+    color: #374151;
+    font-size: 0.86rem;
+}
+
+.itemValues strong {
+    color: #111111;
+}
+
+.billRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #c7c7c7;
+    color: #1f2937;
+}
+
+.billTotal {
+    margin-top: 0.35rem;
+    padding-top: 0.8rem;
+    border-top: 2px solid #111111;
+    border-bottom: none;
+    font-size: 1rem;
+    color: #111111;
+}
+
+.actions,
+.noticeActions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.errorText {
+    margin: 0 0 0.9rem;
+    color: #111111;
+    font-weight: 600;
+}
+
+@media (max-width: 900px) {
+    .summaryGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .title {
+        font-size: 1.45rem;
+    }
+
+    .headerRow {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .summaryGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .itemRow {
+        flex-direction: column;
+    }
+
+    .itemValues {
+        align-items: flex-start;
+    }
+
+    .actions,
+    .noticeActions {
+        width: 100%;
+    }
+
+    .actions :global(a),
+    .noticeActions :global(a) {
+        width: 100%;
+    }
+}

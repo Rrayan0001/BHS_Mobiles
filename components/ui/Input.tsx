@@ -33,7 +33,11 @@ export default function Input({
 
     return (
         <div className={fullWidth ? styles.fullWidth : ''}>
-            {label && <label className={styles.label}>{label}</label>}
+            {label && (
+                <label className={styles.label}>
+                    {label} {props.required && <span style={{ color: 'red' }}>*</span>}
+                </label>
+            )}
             <div className={styles.inputWrapper}>
                 {leftIcon && <span className={styles.leftIcon}>{leftIcon}</span>}
                 <input className={inputClasses} {...props} />

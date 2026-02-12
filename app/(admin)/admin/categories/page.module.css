@@ -194,3 +194,33 @@
         flex-direction: column;
     }
 }
+
+/* Very small phones */
+@media (max-width: 380px) {
+    .page {
+        padding: 12px;
+    }
+
+    .title {
+        font-size: 20px;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px 6px;
+        font-size: 12px;
+    }
+
+    .modalContent {
+        padding: 16px;
+        width: 98%;
+    }
+
+    .modalContent h2 {
+        font-size: 18px;
+    }
+
+    .actionBtn {
+        font-size: 16px;
+    }
+}

@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
-import Image from 'next/image'
+import { useParams, useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import ConditionBadge from '@/components/product/ConditionBadge'
 import { useCart } from '@/contexts/CartContext'
+import { useAuth } from '@/contexts/AuthContext'
+import { getMaxAllowedQuantity, resolvePurchaseMode } from '@/lib/cartRules'
 import styles from './page.module.css'
 
 interface Product {
@@ -21,12 +22,21 @@ interface Product {
     sku: string
     images: { url: string; alt: string; is_primary: boolean }[]
     attributes: { label: string; value: string }[]
+    category?: {
+        slug?: string
+        name?: string
+        display_name?: string
+    } | null
+    purchase_mode?: string | null
+    is_single_unit?: boolean | null
 }
 
 export default function ProductDetailPage() {
     const params = useParams()
+    const router = useRouter()
     const slug = params.slug as string
     const { addItem } = useCart()
+    const { isAuthenticated } = useAuth()
 
     const [product, setProduct] = useState<Product | null>(null)
     const [loading, setLoading] = useState(true)
@@ -64,7 +74,10 @@ export default function ProductDetailPage() {
                         alt: p.title,
                         is_primary: index === 0
                     })) || [],
-                    attributes: p.attributes || []
+                    attributes: p.attributes || [],
+                    category: p.category || null,
+                    purchase_mode: p.purchase_mode ?? null,
+                    is_single_unit: p.is_single_unit ?? null,
                 })
             } catch (err: any) {
                 console.error(err)
@@ -79,15 +92,57 @@ export default function ProductDetailPage() {
         }
     }, [slug])
 
+    useEffect(() => {
+        if (!product) return
+
+        const purchaseMode = resolvePurchaseMode(product)
+        const maxAllowedQuantity = getMaxAllowedQuantity(purchaseMode, product.stock_quantity)
+
+        if (purchaseMode === 'single_unit') {
+            setQuantity(1)
+            return
+        }
+
+        if (maxAllowedQuantity > 0) {
+            setQuantity((current) => Math.min(Math.max(1, current), maxAllowedQuantity))
+        }
+    }, [product])
+
     const handleAddToCart = () => {
         if (!product) return
+
+        const purchaseMode = resolvePurchaseMode(product)
+        const maxAllowedQuantity = getMaxAllowedQuantity(purchaseMode, product.stock_quantity)
+
+        if (maxAllowedQuantity < 1) return
+
+        const requestedQuantity =
+            purchaseMode === 'single_unit'
+                ? 1
+                : Math.min(Math.max(1, quantity), maxAllowedQuantity)
+
         addItem({
             id: product.id,
             name: product.title,
             price: product.price,
             image: product.images[0]?.url || '/placeholder.png',
-            variant: ''
+            variant: '',
+            quantity: requestedQuantity,
+            purchaseMode,
+            maxQuantity: maxAllowedQuantity
         })
+    }
+
+    const handleBuyNow = () => {
+        if (!product || isOutOfStock) return
+
+        handleAddToCart()
+
+        if (isAuthenticated) {
+            router.push('/checkout')
+        } else {
+            router.push('/auth/login?redirect=/checkout')
+        }
     }
 
     if (loading) {
@@ -118,6 +173,11 @@ export default function ProductDetailPage() {
         ? Math.round(((product.compare_at_price - product.price) / product.compare_at_price) * 100)
         : 0
 
+    const purchaseMode = resolvePurchaseMode(product)
+    const maxAllowedQuantity = getMaxAllowedQuantity(purchaseMode, product.stock_quantity)
+    const isSingleUnit = purchaseMode === 'single_unit'
+    const isOutOfStock = maxAllowedQuantity < 1
+
     return (
         <div className={styles.page}>
             <div className="container">
@@ -137,7 +197,7 @@ export default function ProductDetailPage() {
                                     <img
                                         src={product.images[selectedImage].url}
                                         alt={product.images[selectedImage].alt}
-                                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }}
                                     />
                                 ) : (
                                     <div className={styles.imagePlaceholder}>
@@ -146,9 +206,7 @@ export default function ProductDetailPage() {
                                     </div>
                                 )}
                             </div>
-                            {discount > 0 && (
-                                <div className={styles.discountBadge}>-{discount}% OFF</div>
-                            )}
+                            {/* Discount Badge removed as per user request */}
                         </div>
 
                         {product.images.length > 1 && (
@@ -162,7 +220,7 @@ export default function ProductDetailPage() {
                                         <img
                                             src={image.url}
                                             alt={image.alt}
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }}
                                         />
                                     </button>
                                 ))}
@@ -173,7 +231,7 @@ export default function ProductDetailPage() {
                     <div className={styles.details}>
                         <div className={styles.header}>
                             <div className={styles.badges}>
-                                <Badge variant="success" size="md">
+                                <Badge variant="neutral" size="md">
                                     Grade {product.condition_grade}
                                 </Badge>
                                 {product.sku !== 'N/A' && (
@@ -216,37 +274,53 @@ export default function ProductDetailPage() {
                         </div>
 
                         <div className={styles.actions}>
-                            <div className={styles.quantitySelector}>
-                                <label htmlFor="quantity">Quantity:</label>
-                                <div className={styles.quantityControls}>
-                                    <button
-                                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                        disabled={quantity <= 1}
-                                    >
-                                        −
-                                    </button>
-                                    <input
-                                        id="quantity"
-                                        type="number"
-                                        value={quantity}
-                                        onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                                        min="1"
-                                        max={product.stock_quantity}
-                                    />
-                                    <button
-                                        onClick={() => setQuantity(Math.min(product.stock_quantity, quantity + 1))}
-                                        disabled={quantity >= product.stock_quantity}
-                                    >
-                                        +
-                                    </button>
+                            {isSingleUnit ? (
+                                <div className={styles.quantitySelector}>
+                                    <label>Quantity:</label>
+                                    <div className={styles.quantityControls}>
+                                        <input type="number" value={1} readOnly />
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className={styles.quantitySelector}>
+                                    <label htmlFor="quantity">Quantity:</label>
+                                    <div className={styles.quantityControls}>
+                                        <button
+                                            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                            disabled={quantity <= 1}
+                                        >
+                                            −
+                                        </button>
+                                        <input
+                                            id="quantity"
+                                            type="number"
+                                            value={quantity}
+                                            onChange={(e) =>
+                                                setQuantity(
+                                                    Math.min(
+                                                        maxAllowedQuantity,
+                                                        Math.max(1, parseInt(e.target.value) || 1)
+                                                    )
+                                                )
+                                            }
+                                            min="1"
+                                            max={maxAllowedQuantity}
+                                        />
+                                        <button
+                                            onClick={() => setQuantity(Math.min(maxAllowedQuantity, quantity + 1))}
+                                            disabled={quantity >= maxAllowedQuantity}
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
 
                             <div className={styles.buttons}>
-                                <Button variant="primary" size="lg" fullWidth onClick={handleAddToCart}>
-                                    Add to Cart
+                                <Button variant="primary" size="lg" fullWidth onClick={handleAddToCart} disabled={isOutOfStock}>
+                                    {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
                                 </Button>
-                                <Button variant="secondary" size="lg" fullWidth>
+                                <Button variant="secondary" size="lg" fullWidth onClick={handleBuyNow} disabled={isOutOfStock}>
                                     Buy Now
                                 </Button>
                             </div>

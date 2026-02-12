@@ -1,233 +1,539 @@
 .footer {
-    background-color: #0b0f19;
-    /* Deep dark background */
-    color: #ffffff;
-    padding: var(--spacing-12) 0 var(--spacing-6);
+    position: relative;
+    background: linear-gradient(180deg, #111827 0%, #0f172a 58%, #0b1220 100%);
+    color: #e5e7eb;
+    padding: var(--spacing-12) 0 var(--spacing-8);
     font-family: var(--font-sans);
+    border-top: 1px solid rgba(148, 163, 184, 0.28);
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(203, 213, 225, 0.42), transparent);
+    pointer-events: none;
+}
+
+.quickLinksCard,
+.contactCard,
+.locationCard,
+.trustCard {
+    order: 0;
 }
 
 .topBar {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
+    gap: var(--spacing-4);
     margin-bottom: var(--spacing-8);
     padding-bottom: var(--spacing-6);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.brandBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.logoLink {
+    margin: 0;
+    color: #f8fafc;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+}
+
+.logoAccent {
+    color: #93c5fd;
+}
+
+.tagline {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #cbd5e1;
 }
 
 .ownerInfo {
-    font-size: 0.9rem;
-    color: #a0aec0;
+    margin: 0;
+    font-size: 0.88rem;
     font-weight: 500;
+    color: #cbd5e1;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: rgba(15, 23, 42, 0.6);
 }
 
 .footerGrid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing-6);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
     margin-bottom: var(--spacing-8);
 }
 
-/* Card Styling */
 .footerCard {
-    background-color: #151b2b;
-    /* Slightly lighter dark card */
-    border-radius: 20px;
-    padding: var(--spacing-6);
+    min-height: 100%;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.72) 0%, rgba(15, 23, 42, 0.56) 100%);
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    border-radius: 14px;
+    padding: 1.1rem;
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-4);
-    height: 100%;
+    gap: 0.8rem;
+    box-shadow: 0 12px 22px rgba(2, 6, 23, 0.24);
 }
 
 .cardTitle {
-    font-size: 1.1rem;
+    margin: 0;
+    font-size: 1rem;
     font-weight: 700;
-    margin-bottom: var(--spacing-2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: var(--spacing-2);
-    display: inline-block;
-    color: #fff;
+    letter-spacing: 0.01em;
+    color: #f8fafc;
 }
 
-/* Column 1: Contact */
-.contactInfo {
+.linkList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+}
+
+.footerLink {
+    color: #dbe3f0;
+    text-decoration: none;
+    font-size: 0.89rem;
+    line-height: 1.3;
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-3);
-    font-size: 0.9rem;
-    color: #cbd5e0;
+    align-items: center;
+    min-height: 42px;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 9px;
+    background: rgba(15, 23, 42, 0.45);
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.footerLink:hover {
+    color: #f8fafc;
+    border-color: rgba(191, 219, 254, 0.52);
+    background: rgba(30, 41, 59, 0.78);
+}
+
+.contactInfo {
+    margin: 0;
+    display: grid;
+    gap: 0.65rem;
+    font-style: normal;
 }
 
 .infoRow {
+    margin: 0;
+    color: #d2dbea;
     line-height: 1.5;
+    font-size: 0.89rem;
 }
 
 .label {
+    color: #f1f5f9;
     font-weight: 600;
-    color: #fff;
-    margin-right: 4px;
+    margin-right: 0.35rem;
+}
+
+.infoLink {
+    color: #e2e8f0;
+    text-decoration: none;
+    word-break: break-word;
+}
+
+.infoLink:hover {
+    text-decoration: underline;
+}
+
+.hours {
+    border-top: 1px solid rgba(148, 163, 184, 0.24);
+    padding-top: 0.75rem;
+    margin-top: 0.05rem;
+}
+
+.hoursTitle {
+    margin: 0;
+    color: #f8fafc;
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
+.hoursText {
+    margin: 0.2rem 0 0;
+    color: #cbd5e1;
+    font-size: 0.85rem;
 }
 
 .callbackBtn {
     margin-top: auto;
-    background-color: #3182ce;
-    /* Blue button */
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    transition: background 0.2s;
     width: 100%;
+    min-height: 44px;
+    border-radius: 10px;
+    border: 1px solid rgba(248, 250, 252, 0.75);
+    background: #f8fafc;
+    color: #0f172a;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .callbackBtn:hover {
-    background-color: #2b6cb0;
+    background: #e2e8f0;
+    border-color: rgba(226, 232, 240, 0.85);
+    color: #020617;
 }
 
-/* Column 2: Links */
-.linkList {
-    list-style: none;
-    padding: 0;
+.mobileActionRow {
+    display: none;
+}
+
+.mobileActionBtn {
+    text-decoration: none;
+}
+
+.mapPreview {
+    position: relative;
+    height: 168px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.32);
+    background: #0b1324;
+    overflow: hidden;
+}
+
+.mapFrame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+.locationText {
     margin: 0;
+    color: #d2dbea;
+    line-height: 1.45;
+    font-size: 0.89rem;
+}
+
+.mapButton {
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    color: #f8fafc;
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 600;
+    padding: 0.38rem 0.68rem;
+    border-radius: 8px;
+    border: 1px solid rgba(148, 163, 184, 0.42);
+    background: rgba(30, 41, 59, 0.5);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.mapButton:hover {
+    background: rgba(51, 65, 85, 0.78);
+    border-color: rgba(203, 213, 225, 0.58);
+}
+
+.paymentList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.paymentBadge {
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.42);
+    padding: 0.34rem 0.64rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+.gpay {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+.phonepe {
+    background: #3f2a61;
+    color: #f5f3ff;
+    border-color: rgba(196, 181, 253, 0.45);
+}
+
+.upi {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.cash {
+    background: #134e4a;
+    color: #ccfbf1;
+    border-color: rgba(94, 234, 212, 0.35);
+}
+
+.badgeList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.45rem;
+}
+
+.trustBadge {
+    width: fit-content;
+    border-radius: 8px;
+    border: 1px solid rgba(148, 163, 184, 0.34);
+    background: rgba(15, 23, 42, 0.88);
+    color: #e5edf9;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+}
+
+.bottomBar {
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+    padding-top: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: var(--spacing-3);
 }
 
-.footerLink {
-    color: #a0aec0;
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: color 0.2s;
-    display: block;
-}
-
-.footerLink:hover {
-    color: #3182ce;
-    padding-left: 4px;
-    /* Slide effect */
-}
-
-/* Column 3: Map */
-.mapLink {
-    display: block;
-    width: 100%;
-    height: 150px;
-    background-color: #2d3748;
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-.mapPlaceholder {
-    width: 100%;
-    height: 100%;
-    background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Map_symbol.svg/100px-Map_symbol.svg.png");
-    /* Generic map icon fallback or explicit image */
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: bold;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-    /* In a real app, use a real static map image or iframe */
-    background: #2d3748;
-    /* Fallback */
-}
-
-.mapText {
-    z-index: 10;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 4px 8px;
-    border-radius: 4px;
-}
-
-/* Column 4: Payments */
-.paymentSection {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-4);
-}
-
-.paymentIcons {
-    display: flex;
-    gap: var(--spacing-2);
-    flex-wrap: wrap;
-}
-
-.paymentIcon {
-    width: 50px;
-    height: 32px;
-    background: #fff;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    color: #333;
-}
-
-/* Bottom Bar */
-.bottomBar {
-    margin-top: var(--spacing-8);
-    padding-top: var(--spacing-6);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    /* Separator line */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .copyright {
-    color: #718096;
-    font-size: 0.85rem;
+    margin: 0;
+    color: #9fb0c7;
+    font-size: 0.82rem;
 }
 
 .socialLinks {
     display: flex;
-    gap: var(--spacing-4);
+    gap: 0.6rem;
 }
 
 .socialIcon {
-    color: #a0aec0;
-    font-size: 1.2rem;
-    transition: color 0.2s;
+    text-decoration: none;
+    color: #f8fafc;
+    font-size: 0.86rem;
+    font-weight: 600;
+    border: 1px solid rgba(148, 163, 184, 0.45);
+    border-radius: 8px;
+    padding: 0.35rem 0.7rem;
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(30, 41, 59, 0.6);
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .socialIcon:hover {
-    color: white;
+    color: #ffffff;
+    background: rgba(51, 65, 85, 0.85);
+    border-color: rgba(203, 213, 225, 0.66);
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
+.logoLink:focus-visible,
+.footerLink:focus-visible,
+.infoLink:focus-visible,
+.callbackBtn:focus-visible,
+.mapButton:focus-visible,
+.socialIcon:focus-visible {
+    outline: 2px solid #e2e8f0;
+    outline-offset: 2px;
+}
+
+@media (max-width: 1080px) {
     .footerGrid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 640px) {
-    .footerGrid {
-        grid-template-columns: 1fr;
+    .footer {
+        padding-top: var(--spacing-8);
+        padding-bottom: calc(var(--spacing-8) + env(safe-area-inset-bottom));
     }
 
     .topBar {
         flex-direction: column;
-        gap: var(--spacing-4);
+        align-items: flex-start;
+        gap: 0.55rem;
+        margin-bottom: var(--spacing-6);
+        padding-bottom: var(--spacing-4);
+    }
+
+    .logoLink {
+        font-size: 1.4rem;
+    }
+
+    .ownerInfo,
+    .tagline {
+        font-size: 0.84rem;
+    }
+
+    .footerGrid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        margin-bottom: var(--spacing-6);
+    }
+
+    .contactCard {
+        order: 1;
+    }
+
+    .quickLinksCard {
+        order: 2;
+    }
+
+    .locationCard {
+        order: 3;
+    }
+
+    .trustCard {
+        order: 4;
+    }
+
+    .footerCard {
+        padding: 0.95rem;
+        border-radius: 13px;
+    }
+
+    .cardTitle {
+        font-size: 0.95rem;
+    }
+
+    .linkList {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+    }
+
+    .footerLink {
+        min-height: 41px;
+        font-size: 0.83rem;
+        justify-content: center;
         text-align: center;
+        padding: 0.42rem 0.5rem;
+    }
+
+    .contactInfo {
+        gap: 0.5rem;
+    }
+
+    .infoRow {
+        font-size: 0.84rem;
+    }
+
+    .hoursTitle,
+    .hoursText {
+        font-size: 0.82rem;
+    }
+
+    .mobileActionRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.45rem;
+        margin-top: 0.1rem;
+    }
+
+    .mobileActionBtn {
+        min-height: 42px;
+        border-radius: 9px;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        background: rgba(30, 41, 59, 0.82);
+        color: #e5edf9;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .callbackBtn {
+        font-size: 0.84rem;
+        margin-top: 0.35rem;
+    }
+
+    .mapPreview {
+        height: 138px;
+    }
+
+    .locationText {
+        font-size: 0.84rem;
+    }
+
+    .mapButton {
+        width: 100%;
+        font-size: 0.83rem;
+    }
+
+    .paymentList {
+        gap: 0.4rem;
+    }
+
+    .paymentBadge {
+        font-size: 0.7rem;
+        padding: 0.33rem 0.52rem;
+    }
+
+    .badgeList {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.35rem;
+    }
+
+    .trustBadge {
+        width: 100%;
+        text-align: center;
+        font-size: 0.71rem;
+        padding: 0.32rem 0.45rem;
     }
 
     .bottomBar {
         flex-direction: column;
-        gap: var(--spacing-4);
+        align-items: stretch;
+        gap: 0.7rem;
+        padding-top: var(--spacing-4);
+    }
+
+    .copyright {
+        font-size: 0.77rem;
+        text-align: center;
+    }
+
+    .socialLinks {
+        width: 100%;
+    }
+
+    .socialIcon {
+        width: 100%;
+        font-size: 0.84rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .linkList {
+        grid-template-columns: 1fr;
+    }
+
+    .badgeList {
+        grid-template-columns: 1fr;
     }
 }

@@ -4,8 +4,6 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Input from '@/components/ui/Input'
-import Button from '@/components/ui/Button'
-import Card from '@/components/ui/Card'
 import styles from './page.module.css'
 
 interface Category {
@@ -21,6 +19,7 @@ export default function NewProductPage() {
     const [categories, setCategories] = useState<Category[]>([])
     const [uploadedImages, setUploadedImages] = useState<string[]>([])
     const [uploading, setUploading] = useState(false)
+    const [phoneType, setPhoneType] = useState<'android' | 'iphone' | ''>('')
 
     // Basic Info State
     const [formData, setFormData] = useState({
@@ -133,7 +132,7 @@ export default function NewProductPage() {
                     compare_price: formData.comparePrice ? parseFloat(formData.comparePrice) : null,
                     stock: parseInt(formData.stock) || 0,
                     condition: formData.condition,
-                    status: 'active',
+                    status: 'draft',
                     images: uploadedImages,
                     is_featured: formData.is_featured,
                     featured_order: formData.featured_order,
@@ -166,16 +165,16 @@ export default function NewProductPage() {
                     <h1 className={styles.title}>Add New Product</h1>
                 </div>
                 <div className={styles.headerActions}>
-                    <Button variant="outline" onClick={() => router.back()}>Cancel</Button>
-                    <Button variant="primary" onClick={handleSubmit} loading={loading}>
-                        Save Product
-                    </Button>
+                    <button className={styles.cancelBtn} onClick={() => router.back()}>Cancel</button>
+                    <button className={styles.saveBtn} onClick={handleSubmit} disabled={loading}>
+                        {loading ? 'Saving...' : '✓ Save Product'}
+                    </button>
                 </div>
             </div>
 
             <div className={styles.grid}>
                 <div className={styles.mainColumn}>
-                    <Card padding="lg" className={styles.card}>
+                    <div className={styles.card}>
                         <h2 className={styles.cardTitle}>Basic Information</h2>
                         <div className={styles.formGroup}>
                             <Input
@@ -199,14 +198,14 @@ export default function NewProductPage() {
                                 onChange={handleInputChange}
                             />
                         </div>
-                    </Card>
+                    </div>
 
-                    <Card padding="lg" className={styles.card}>
+                    <div className={styles.card}>
                         <h2 className={styles.cardTitle}>Media</h2>
                         <div className={styles.mediaUpload}>
                             <div className={styles.uploadBox}>
                                 <span className={styles.uploadIcon}>📷</span>
-                                <p>{uploading ? 'Uploading...' : 'Drag and drop images here, or click to select'}</p>
+                                <p className={styles.uploadText}>{uploading ? 'Uploading...' : 'Drag and drop images here, or click to select'}</p>
                                 <input
                                     type="file"
                                     multiple
@@ -217,26 +216,26 @@ export default function NewProductPage() {
                                 />
                             </div>
                             {uploadedImages.length > 0 && (
-                                <div style={{ marginTop: '16px' }}>
-                                    <p style={{ marginBottom: '8px', fontSize: '14px' }}>
+                                <div className={styles.imagePreviewArea}>
+                                    <p className={styles.imagePreviewLabel}>
                                         Uploaded: {uploadedImages.length} image(s)
                                     </p>
-                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                    <div className={styles.imageGrid}>
                                         {uploadedImages.map((url, index) => (
                                             <img
                                                 key={index}
                                                 src={url}
                                                 alt={`Upload ${index + 1}`}
-                                                style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px' }}
+                                                className={styles.imagePreview}
                                             />
                                         ))}
                                     </div>
                                 </div>
                             )}
                         </div>
-                    </Card>
+                    </div>
 
-                    <Card padding="lg" className={styles.card}>
+                    <div className={styles.card}>
                         <h2 className={styles.cardTitle}>Specifications</h2>
                         <div className={styles.specsGrid}>
                             {(() => {
@@ -246,41 +245,132 @@ export default function NewProductPage() {
                                 if (slug === 'phones' || slug === 'smartphones') {
                                     return (
                                         <>
+                                            <div className={styles.formGroup}>
+                                                <label className={styles.label}>Device Type (Auto-fills OS)</label>
+                                                <div className={styles.radioGroup} style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                                        <input
+                                                            type="radio"
+                                                            name="phoneType"
+                                                            value="iphone"
+                                                            checked={phoneType === 'iphone'}
+                                                            onChange={() => {
+                                                                setPhoneType('iphone')
+                                                                handleSpecChange('os', 'iOS')
+                                                                handleSpecChange('brand', 'Apple')
+                                                            }}
+                                                        />
+                                                        iPhone
+                                                    </label>
+                                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                                        <input
+                                                            type="radio"
+                                                            name="phoneType"
+                                                            value="android"
+                                                            checked={phoneType === 'android'}
+                                                            onChange={() => {
+                                                                setPhoneType('android')
+                                                                handleSpecChange('os', 'Android')
+                                                                handleSpecChange('brand', '')
+                                                            }}
+                                                        />
+                                                        Android
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div className={styles.grid2} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                                <Input
+                                                    label="Brand"
+                                                    value={specs.brand || ''}
+                                                    onChange={(e) => handleSpecChange('brand', e.target.value)}
+                                                    placeholder="e.g. Samsung, OnePlus"
+                                                    fullWidth
+                                                />
+                                                <Input
+                                                    label="Model"
+                                                    value={specs.model || ''}
+                                                    onChange={(e) => handleSpecChange('model', e.target.value)}
+                                                    placeholder="e.g. Galaxy S23 Ultra"
+                                                    fullWidth
+                                                />
+                                            </div>
+
+                                            <div className={styles.grid2} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                                <Input
+                                                    label="Storage"
+                                                    value={specs.storage || ''}
+                                                    onChange={(e) => handleSpecChange('storage', e.target.value)}
+                                                    placeholder="e.g. 256GB"
+                                                    fullWidth
+                                                />
+                                                <Input
+                                                    label="RAM"
+                                                    value={specs.ram || ''}
+                                                    onChange={(e) => handleSpecChange('ram', e.target.value)}
+                                                    placeholder="e.g. 8GB, 12GB"
+                                                    fullWidth
+                                                />
+                                            </div>
+
+                                            <div className={styles.grid2} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                                <Input
+                                                    label="Color"
+                                                    value={specs.color || ''}
+                                                    onChange={(e) => handleSpecChange('color', e.target.value)}
+                                                    placeholder="e.g. Phantom Black"
+                                                    fullWidth
+                                                />
+                                                <Input
+                                                    label="Screen Size"
+                                                    value={specs.screen_size || ''}
+                                                    onChange={(e) => handleSpecChange('screen_size', e.target.value)}
+                                                    placeholder="e.g. 6.8 inches"
+                                                    fullWidth
+                                                />
+                                            </div>
+
                                             <Input
-                                                label="Brand"
-                                                value={specs.brand || ''}
-                                                onChange={(e) => handleSpecChange('brand', e.target.value)}
-                                                placeholder="e.g. Apple, Samsung, OnePlus"
+                                                label="Processor"
+                                                value={specs.processor || ''}
+                                                onChange={(e) => handleSpecChange('processor', e.target.value)}
+                                                placeholder="e.g. Snapdragon 8 Gen 2"
                                                 fullWidth
                                             />
-                                            <Input
-                                                label="Model"
-                                                value={specs.model || ''}
-                                                onChange={(e) => handleSpecChange('model', e.target.value)}
-                                                placeholder="e.g. iPhone 13 Pro"
-                                                fullWidth
-                                            />
-                                            <Input
-                                                label="Year"
-                                                value={specs.year || ''}
-                                                onChange={(e) => handleSpecChange('year', e.target.value)}
-                                                placeholder="e.g. 2023"
-                                                fullWidth
-                                            />
-                                            <Input
-                                                label="Storage"
-                                                value={specs.storage || ''}
-                                                onChange={(e) => handleSpecChange('storage', e.target.value)}
-                                                placeholder="e.g. 128GB, 256GB"
-                                                fullWidth
-                                            />
-                                            <Input
-                                                label="Color"
-                                                value={specs.color || ''}
-                                                onChange={(e) => handleSpecChange('color', e.target.value)}
-                                                placeholder="e.g. Sierra Blue, Midnight"
-                                                fullWidth
-                                            />
+
+                                            <div className={styles.grid2} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                                <Input
+                                                    label="Main Camera"
+                                                    value={specs.main_camera || ''}
+                                                    onChange={(e) => handleSpecChange('main_camera', e.target.value)}
+                                                    placeholder="e.g. 200MP + 12MP + 10MP"
+                                                    fullWidth
+                                                />
+                                                <Input
+                                                    label="Selfie Camera"
+                                                    value={specs.selfie_camera || ''}
+                                                    onChange={(e) => handleSpecChange('selfie_camera', e.target.value)}
+                                                    placeholder="e.g. 12MP"
+                                                    fullWidth
+                                                />
+                                            </div>
+
+                                            <div className={styles.grid2} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                                <Input
+                                                    label="Battery"
+                                                    value={specs.battery || ''}
+                                                    onChange={(e) => handleSpecChange('battery', e.target.value)}
+                                                    placeholder="e.g. 5000mAh"
+                                                    fullWidth
+                                                />
+                                                <Input
+                                                    label="Operating System"
+                                                    value={specs.os || ''}
+                                                    onChange={(e) => handleSpecChange('os', e.target.value)}
+                                                    placeholder="e.g. Android 13 / iOS 16"
+                                                    fullWidth
+                                                />
+                                            </div>
                                         </>
                                     )
                                 }
@@ -420,17 +510,17 @@ export default function NewProductPage() {
 
                                 // Fallback
                                 return (
-                                    <div style={{ gridColumn: '1 / -1', color: 'var(--color-neutral-500)', fontSize: '0.9rem', fontStyle: 'italic' }}>
+                                    <div className={styles.specsFallback}>
                                         Select a category to view specific fields. If no specific fields appear, you can add generic details in the description.
                                     </div>
                                 )
                             })()}
                         </div>
-                    </Card>
+                    </div>
                 </div>
 
                 <div className={styles.sideColumn}>
-                    <Card padding="lg" className={styles.card}>
+                    <div className={styles.card}>
                         <h2 className={styles.cardTitle}>Organization</h2>
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Category</label>
@@ -446,6 +536,56 @@ export default function NewProductPage() {
                                 ))}
                             </select>
                         </div>
+
+                        {/* Phone Type Selection in Organization Card for Quick Access */}
+                        {(categories.find(c => c.id === category)?.name === 'phones' || categories.find(c => c.id === category)?.name === 'smartphones') && (
+                            <div className={styles.formGroup} style={{ background: '#f8fafc', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                                <label className={styles.label} style={{ marginBottom: '8px', display: 'block' }}>Phone Type</label>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setPhoneType('iphone')
+                                            handleSpecChange('os', 'iOS')
+                                            handleSpecChange('brand', 'Apple')
+                                        }}
+                                        style={{
+                                            flex: 1,
+                                            padding: '8px',
+                                            borderRadius: '6px',
+                                            border: phoneType === 'iphone' ? '2px solid #6366f1' : '1px solid #d1d5db',
+                                            background: phoneType === 'iphone' ? '#eef2ff' : 'white',
+                                            color: phoneType === 'iphone' ? '#4f46e5' : '#374151',
+                                            fontWeight: 500,
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        iPhone
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setPhoneType('android')
+                                            handleSpecChange('os', 'Android')
+                                            handleSpecChange('brand', '')
+                                        }}
+                                        style={{
+                                            flex: 1,
+                                            padding: '8px',
+                                            borderRadius: '6px',
+                                            border: phoneType === 'android' ? '2px solid #6366f1' : '1px solid #d1d5db',
+                                            background: phoneType === 'android' ? '#eef2ff' : 'white',
+                                            color: phoneType === 'android' ? '#4f46e5' : '#374151',
+                                            fontWeight: 500,
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        Android
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
                         <div className={styles.formGroup}>
                             <label className={styles.label}>Condition</label>
                             <select
@@ -461,7 +601,7 @@ export default function NewProductPage() {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                            <label className={styles.checkboxLabel}>
                                 <input
                                     type="checkbox"
                                     checked={formData.is_featured || false}
@@ -483,9 +623,9 @@ export default function NewProductPage() {
                                 />
                             </div>
                         )}
-                    </Card>
+                    </div>
 
-                    <Card padding="lg" className={styles.card}>
+                    <div className={styles.card}>
                         <h2 className={styles.cardTitle}>Pricing & Inventory</h2>
                         <div className={styles.formGroup}>
                             <Input
@@ -535,7 +675,7 @@ export default function NewProductPage() {
                                 fullWidth
                             />
                         </div>
-                    </Card>
+                    </div>
                 </div>
             </div>
         </div>

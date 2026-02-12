@@ -1,17 +1,45 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Card from '@/components/ui/Card'
 import styles from './page.module.css'
 
 export default function AdminDashboard() {
-    const stats = [
+    const [stats, setStats] = useState({
+        totalSales: 0,
+        totalOrders: 0,
+        pendingOrders: 0,
+        lowStockItems: 0
+    })
+    const [recentOrders, setRecentOrders] = useState<any[]>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        fetchDashboardData()
+    }, [])
+
+    const fetchDashboardData = async () => {
+        try {
+            const response = await fetch('/api/admin/dashboard')
+            if (response.ok) {
+                const data = await response.json()
+                setStats(data.stats)
+                setRecentOrders(data.recentOrders)
+            }
+        } catch (error) {
+            console.error('Failed to fetch dashboard data:', error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const statCards = [
         {
             label: 'Total Sales',
-            value: '₹0',
-            trend: '0%',
-            trendLabel: 'no data yet',
+            value: `₹${stats.totalSales.toLocaleString()}`,
+            trend: 'Verified',
+            trendLabel: 'updated just now',
             icon: (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="12" y1="1" x2="12" y2="23"></line>
@@ -22,9 +50,9 @@ export default function AdminDashboard() {
         },
         {
             label: 'Total Orders',
-            value: '0',
-            trend: '0%',
-            trendLabel: 'no data yet',
+            value: stats.totalOrders.toString(),
+            trend: 'Verified',
+            trendLabel: 'total orders placed',
             icon: (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="9" cy="21" r="1"></circle>
@@ -36,9 +64,9 @@ export default function AdminDashboard() {
         },
         {
             label: 'Pending Orders',
-            value: '0',
-            trend: '0',
-            trendLabel: 'no data yet',
+            value: stats.pendingOrders.toString(),
+            trend: 'Action Needed',
+            trendLabel: 'orders awaiting processing',
             icon: (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -49,9 +77,9 @@ export default function AdminDashboard() {
         },
         {
             label: 'Low Stock Items',
-            value: '0',
-            trend: '0',
-            trendLabel: 'no data yet',
+            value: stats.lowStockItems.toString(),
+            trend: 'Alert',
+            trendLabel: 'products running low',
             icon: (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
@@ -62,8 +90,6 @@ export default function AdminDashboard() {
             color: '#ef4444'
         },
     ]
-
-    const recentOrders: any[] = []
 
     const quickActions = [
         { label: 'Add Product', href: '/admin/products/new', icon: '📦', color: '#6366f1' },
@@ -82,6 +108,10 @@ export default function AdminDashboard() {
         }
     }
 
+    if (loading) {
+        return <div className={styles.dashboard}>Loading dashboard...</div>
+    }
+
     return (
         <div className={styles.dashboard}>
             {/* Header */}
@@ -94,7 +124,7 @@ export default function AdminDashboard() {
 
             {/* Stats Grid */}
             <div className={styles.statsGrid}>
-                {stats.map((stat, index) => (
+                {statCards.map((stat, index) => (
                     <div key={index} className={styles.statCard}>
                         <div className={styles.statIcon} style={{ backgroundColor: `${stat.color}15`, color: stat.color }}>
                             {stat.icon}

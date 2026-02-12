@@ -1,25 +1,21 @@
-'use client'
-
-import React from 'react'
-import Link from 'next/link'
 import Hero from '@/components/home/Hero'
 import CategoryIcons from '@/components/home/CategoryIcons'
+import ParallaxTextBand from '@/components/home/ParallaxTextBand'
 import TopPicksMarquee from '@/components/home/TopPicksMarquee'
-import TopPicks from '@/components/TopPicks'
 import styles from './page.module.css'
+
+const PARALLAX_PROMISE_TEXT =
+    'Certified Refurbished • Up to 70% Savings • 6-Month Warranty • 50-Point Quality Check • Fast Delivery • Easy Returns • Genuine Accessories • iPhone • Android • Apple Watch'
 
 export default function Home() {
     return (
         <main className={styles.main}>
             <Hero />
 
-            {/* New Category Icons Section */}
             <CategoryIcons />
 
-            {/* Top Picks Section */}
-            <TopPicks />
+            <ParallaxTextBand text={PARALLAX_PROMISE_TEXT} />
 
-            {/* Top Picks Marquee */}
             <TopPicksMarquee />
         </main>
     )

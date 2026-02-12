@@ -26,16 +26,26 @@ export async function GET(request: NextRequest) {
             `, { count: 'exact' })
             .eq('status', 'active')
 
-        // Filter by category slug
+        // Filter by category slug (with name fallback for older records)
         if (category) {
-            const { data: cat } = await supabase
+            const { data: categoryBySlug } = await supabase
                 .from('categories')
                 .select('id')
-                .eq('name', category)
-                .single()
+                .eq('slug', category)
+                .maybeSingle()
 
-            if (cat) {
-                query = query.eq('category_id', cat.id)
+            if (categoryBySlug) {
+                query = query.eq('category_id', categoryBySlug.id)
+            } else {
+                const { data: categoryByName } = await supabase
+                    .from('categories')
+                    .select('id')
+                    .eq('name', category)
+                    .maybeSingle()
+
+                if (categoryByName) {
+                    query = query.eq('category_id', categoryByName.id)
+                }
             }
         }
 

@@ -16,7 +16,10 @@ export default function IPhonePage() {
             name: product.name,
             price: product.price,
             image: product.image,
-            variant: '128GB'
+            variant: '128GB',
+            purchaseMode: 'single_unit',
+            maxQuantity: 1,
+            quantity: 1
         })
     }
 
@@ -26,7 +29,7 @@ export default function IPhonePage() {
             <div className={styles.banner}>
                 <div className="container">
                     <h1 className={styles.bannerTitle}>iPhone</h1>
-                    <p className={styles.bannerSubtitle}>Our latest collection of iPhones</p>
+                    <p className={styles.bannerSubtitle}>New and certified pre-owned iPhones</p>
                 </div>
             </div>
 

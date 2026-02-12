@@ -1,5 +1,7 @@
 import React from 'react'
+import Link from 'next/link'
 import Card from '@/components/ui/Card'
+import Button from '@/components/ui/Button'
 import styles from './page.module.css'
 
 export default function WarrantyPage() {
@@ -104,7 +106,11 @@ export default function WarrantyPage() {
                     <section className={styles.ctaSection}>
                         <h2>Need to Claim Warranty?</h2>
                         <p>We make it simple. Just reach out to our support team.</p>
-                        <button className={styles.ctaButton}>Contact Support</button>
+                        <Link href="/contact">
+                            <Button variant="primary" className={styles.ctaButton}>
+                                Contact Support
+                            </Button>
+                        </Link>
                     </section>
                 </div>
             </div>

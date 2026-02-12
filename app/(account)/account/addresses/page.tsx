@@ -5,23 +5,8 @@ import { Plus, Edit2, Trash2, MapPin } from 'lucide-react'
 import styles from './page.module.css'
 import { Address } from '@/lib/types'
 
-// Mock Data
-const INITIAL_ADDRESSES: Address[] = [
-    {
-        id: '1',
-        name: 'John Doe',
-        phone: '+91 98765 43210',
-        line1: '123, Main Street',
-        line2: 'Apartment 4B',
-        city: 'Mumbai',
-        state: 'Maharashtra',
-        pincode: '400001',
-        is_default: true
-    }
-]
-
 export default function AddressesPage() {
-    const [addresses, setAddresses] = useState<Address[]>(INITIAL_ADDRESSES)
+    const [addresses, setAddresses] = useState<Address[]>([])
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null)
     const [formData, setFormData] = useState<Partial<Address>>({

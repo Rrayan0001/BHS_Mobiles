@@ -1,8 +1,10 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
+import { getMaxAllowedQuantity, resolvePurchaseMode } from '@/lib/cartRules'
 import styles from './products.module.css'
 
 interface Product {
@@ -23,24 +25,39 @@ interface Product {
     } | null
 }
 
-export default function ProductsPage() {
+function ProductsContent() {
     const { addItem } = useCart()
+    const searchParams = useSearchParams()
     const [products, setProducts] = useState<Product[]>([])
     const [loading, setLoading] = useState(true)
     const [sortBy, setSortBy] = useState('newest')
+    const searchQuery = searchParams.get('search')?.trim() || ''
 
     useEffect(() => {
         fetchProducts()
-    }, [sortBy])
+    }, [sortBy, searchQuery])
 
     const fetchProducts = async () => {
         try {
             setLoading(true)
-            const sortParam = sortBy === 'price_asc' ? 'sort=price&order=asc'
-                : sortBy === 'price_desc' ? 'sort=price&order=desc'
-                    : 'sort=created_at&order=desc'
+            const params = new URLSearchParams()
 
-            const response = await fetch(`/api/products?${sortParam}`)
+            if (sortBy === 'price_asc') {
+                params.set('sort', 'price')
+                params.set('order', 'asc')
+            } else if (sortBy === 'price_desc') {
+                params.set('sort', 'price')
+                params.set('order', 'desc')
+            } else {
+                params.set('sort', 'created_at')
+                params.set('order', 'desc')
+            }
+
+            if (searchQuery) {
+                params.set('search', searchQuery)
+            }
+
+            const response = await fetch(`/api/products?${params.toString()}`)
             const data = await response.json()
             setProducts(data.products || [])
         } catch (error) {
@@ -51,12 +68,20 @@ export default function ProductsPage() {
     }
 
     const handleAddToCart = (product: Product) => {
+        const purchaseMode = resolvePurchaseMode(product)
+        const maxQuantity = getMaxAllowedQuantity(purchaseMode, product.stock)
+
+        if (maxQuantity < 1) return
+
         addItem({
             id: product.id,
             name: product.title,
             price: product.price,
             image: product.images?.[0] || '/placeholder.png',
-            variant: ''
+            variant: '',
+            purchaseMode,
+            maxQuantity,
+            quantity: 1
         })
     }
 
@@ -66,7 +91,7 @@ export default function ProductsPage() {
             <div className={styles.banner}>
                 <div className="container">
                     <h1 className={styles.bannerTitle}>All Products</h1>
-                    <p className={styles.bannerSubtitle}>The only marketplace you'll ever need</p>
+                    <p className={styles.bannerSubtitle}>Premium smartphones at competitive prices</p>
                 </div>
             </div>
 
@@ -74,8 +99,12 @@ export default function ProductsPage() {
             <div className={styles.filtersSection}>
                 <div className="container">
                     <div className={styles.filtersBar}>
-                        <p style={{ color: 'var(--color-neutral-600)', fontSize: '0.9rem' }}>
-                            {loading ? 'Loading...' : `${products.length} products found`}
+                        <p className={styles.productCount}>
+                            {loading
+                                ? 'Loading...'
+                                : searchQuery
+                                    ? `${products.length} result${products.length === 1 ? '' : 's'} for "${searchQuery}"`
+                                    : `${products.length} products found`}
                         </p>
                         <div className={styles.sortBy}>
                             <label>Sort by:</label>
@@ -96,14 +125,27 @@ export default function ProductsPage() {
             {/* Products Grid */}
             <div className="container">
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '4rem 2rem', color: 'var(--color-neutral-500)' }}>
+                    <div className={styles.loadingState}>
                         Loading products...
                     </div>
                 ) : products.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📦</div>
-                        <h3 style={{ marginBottom: '0.5rem', color: 'var(--color-neutral-800)' }}>No products yet</h3>
-                        <p style={{ color: 'var(--color-neutral-500)' }}>Check back soon for new products!</p>
+                    <div className={styles.emptyState}>
+                        <div className={styles.productEmoji}>📦</div>
+                        {searchQuery ? (
+                            <>
+                                <h3 className={styles.emptyTitle}>
+                                    No products found
+                                </h3>
+                                <p className={styles.emptyText}>
+                                    No matches for "{searchQuery}". Try different keywords.
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <h3 className={styles.emptyTitle}>No products yet</h3>
+                                <p className={styles.emptyText}>Check back soon for new products!</p>
+                            </>
+                        )}
                     </div>
                 ) : (
                     <div className={styles.productsGrid}>
@@ -120,23 +162,13 @@ export default function ProductsPage() {
                                                 <img
                                                     src={product.images[0]}
                                                     alt={product.title}
-                                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                                                    className={styles.productImageEl}
                                                 />
                                             ) : (
-                                                <span style={{ fontSize: '4rem' }}>📱</span>
+                                                <span className={styles.productEmoji}>📱</span>
                                             )}
                                             {discount > 0 && (
-                                                <span style={{
-                                                    position: 'absolute',
-                                                    top: '8px',
-                                                    right: '8px',
-                                                    background: '#ef4444',
-                                                    color: 'white',
-                                                    padding: '2px 8px',
-                                                    borderRadius: '4px',
-                                                    fontSize: '0.75rem',
-                                                    fontWeight: '600'
-                                                }}>
+                                                <span className={styles.discountBadge}>
                                                     {discount}% OFF
                                                 </span>
                                             )}
@@ -146,7 +178,7 @@ export default function ProductsPage() {
                                     <div className={styles.productInfo}>
                                         <h3 className={styles.productName}>{product.title}</h3>
                                         {product.category && (
-                                            <span style={{ fontSize: '0.75rem', color: 'var(--color-neutral-500)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                            <span className={styles.categoryTag}>
                                                 {product.category.display_name || product.category.name}
                                             </span>
                                         )}
@@ -159,8 +191,9 @@ export default function ProductsPage() {
                                         <button
                                             className={styles.addToCartBtn}
                                             onClick={() => handleAddToCart(product)}
+                                            disabled={product.stock < 1}
                                         >
-                                            🛒 Add to cart
+                                            {product.stock < 1 ? 'Out of stock' : '🛒 Add to cart'}
                                         </button>
                                     </div>
                                 </div>
@@ -170,5 +203,25 @@ export default function ProductsPage() {
                 )}
             </div>
         </div>
+    )
+}
+
+function ProductsLoadingFallback() {
+    return (
+        <div className={styles.page}>
+            <div className="container">
+                <div className={styles.loadingState}>
+                    Loading products...
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default function ProductsPage() {
+    return (
+        <Suspense fallback={<ProductsLoadingFallback />}>
+            <ProductsContent />
+        </Suspense>
     )
 }

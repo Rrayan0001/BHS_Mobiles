@@ -2,17 +2,61 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useCart } from '@/contexts/CartContext'
 import { useAuth } from '@/contexts/AuthContext'
 import styles from './Header.module.css'
 
+interface CategoryNavItem {
+    id: string
+    name: string
+    slug: string
+    display_name?: string | null
+}
+
+interface NavItem {
+    name: string
+    href: string
+    activePrefixes?: string[]
+}
+
+const DEFAULT_NAV_ITEMS: NavItem[] = [
+    { name: 'All Products', href: '/products', activePrefixes: ['/product'] },
+    { name: 'iPhone', href: '/shop/category/iphone', activePrefixes: ['/category/iphone'] },
+    { name: 'iWatch', href: '/shop/category/iwatch', activePrefixes: ['/category/iwatch'] },
+    { name: 'AirPods', href: '/shop/category/airpods', activePrefixes: ['/category/airpods'] },
+    { name: 'Android', href: '/shop/category/android', activePrefixes: ['/category/android'] },
+    { name: 'Accessories', href: '/shop/category/accessories', activePrefixes: ['/category/accessories'] },
+]
+
+const CATEGORY_NAV_LIMIT = 5
+
+const normalizePath = (value: string) => {
+    const path = value.split('?')[0].split('#')[0]
+
+    if (!path) return '/'
+    if (path === '/') return '/'
+    return path.endsWith('/') ? path.slice(0, -1) : path
+}
+
+const toDisplayLabel = (input: string) => {
+    return input
+        .trim()
+        .replace(/[-_]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .replace(/\b\w/g, (match) => match.toUpperCase())
+}
+
 export default function Header() {
     const pathname = usePathname()
+    const router = useRouter()
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
+    const [searchQuery, setSearchQuery] = useState('')
+    const [mobileSearchQuery, setMobileSearchQuery] = useState('')
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+    const [navItems, setNavItems] = useState<NavItem[]>(DEFAULT_NAV_ITEMS)
     const cartRef = useRef<HTMLDivElement>(null)
     const userMenuRef = useRef<HTMLDivElement>(null)
 
@@ -21,6 +65,64 @@ export default function Header() {
 
     // Use auth context
     const { user, isAuthenticated, signOut, loading } = useAuth()
+
+    useEffect(() => {
+        let ignore = false
+        const controller = new AbortController()
+
+        const loadNavCategories = async () => {
+            try {
+                const response = await fetch(`/api/categories?limit=${CATEGORY_NAV_LIMIT}`, {
+                    signal: controller.signal,
+                    cache: 'no-store',
+                })
+
+                if (!response.ok) {
+                    return
+                }
+
+                const data: { categories?: CategoryNavItem[] } = await response.json()
+                const categories = Array.isArray(data.categories) ? data.categories : []
+
+                if (!categories.length || ignore) {
+                    return
+                }
+
+                const categoryNavItems: NavItem[] = categories
+                    .filter((category) => typeof category.slug === 'string' && category.slug.trim().length > 0)
+                    .map((category) => {
+                        const slug = category.slug.trim()
+                        const displayName = category.display_name?.trim()
+                        const fallbackLabel = category.name?.trim() || slug
+
+                        return {
+                            name: displayName || toDisplayLabel(fallbackLabel),
+                            href: `/shop/category/${slug}`,
+                            activePrefixes: [`/category/${slug}`],
+                        }
+                    })
+                    .slice(0, CATEGORY_NAV_LIMIT)
+
+                if (!categoryNavItems.length || ignore) {
+                    return
+                }
+
+                setNavItems([DEFAULT_NAV_ITEMS[0], ...categoryNavItems])
+            } catch (error) {
+                if (error instanceof Error && error.name === 'AbortError') {
+                    return
+                }
+                console.error('Failed to load navbar categories:', error)
+            }
+        }
+
+        loadNavCategories()
+
+        return () => {
+            ignore = true
+            controller.abort()
+        }
+    }, [])
 
     // Close cart when clicking outside
     useEffect(() => {
@@ -56,14 +158,43 @@ export default function Header() {
         setMobileMenuOpen(false)
     }
 
-    const navItems: { name: string; href: string; special?: boolean }[] = [
-        { name: 'All Products', href: '/products' },
-        { name: 'iPhone', href: '/category/iphone' },
-        { name: 'iWatch', href: '/category/iwatch' },
-        { name: 'Airpods', href: '/category/airpods' },
-        { name: 'Android', href: '/category/android' },
-        { name: 'Accessories', href: '/category/accessories' },
-    ]
+    const currentPath = normalizePath(pathname || '/')
+
+    const isNavItemActive = (item: NavItem) => {
+        const targets = [item.href, ...(item.activePrefixes || [])]
+
+        return targets.some((target) => {
+            const normalizedTarget = normalizePath(target)
+
+            if (normalizedTarget === '/') {
+                return currentPath === '/'
+            }
+
+            return currentPath === normalizedTarget || currentPath.startsWith(`${normalizedTarget}/`)
+        })
+    }
+
+    const executeSearch = (value: string, closeMobileMenu = false) => {
+        const query = value.trim()
+        const target = query ? `/products?search=${encodeURIComponent(query)}` : '/products'
+
+        router.push(target)
+        setIsSearchOpen(false)
+
+        if (closeMobileMenu) {
+            setMobileMenuOpen(false)
+        }
+    }
+
+    const handleDesktopSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        executeSearch(searchQuery)
+    }
+
+    const handleMobileSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        executeSearch(mobileSearchQuery, true)
+    }
 
     return (
         <header className={styles.header}>
@@ -86,24 +217,42 @@ export default function Header() {
 
                     {/* Center: Navigation */}
                     <nav className={styles.centerNav}>
-                        {navItems.map((item) => (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className={`${styles.navLink} ${item.special ? styles.specialLink : ''} ${pathname === item.href ? styles.activeLink : ''}`}
-                            >
-                                {item.special && <span className={styles.specialBadge}>GREAT DEALS</span>}
-                                {item.name}
-                            </Link>
-                        ))}
+                        {navItems.map((item) => {
+                            const isActive = isNavItemActive(item)
+
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={`${styles.navLink} ${isActive ? styles.activeLink : ''}`}
+                                    aria-current={isActive ? 'page' : undefined}
+                                >
+                                    {item.name}
+                                </Link>
+                            )
+                        })}
                     </nav>
 
                     {/* Right: Actions (Search, Cart, Account) */}
                     <div className={styles.rightActions}>
                         {/* Search Trigger */}
                         <button
-                            className={styles.iconButton}
-                            onClick={() => setIsSearchOpen(!isSearchOpen)}
+                            type="button"
+                            className={`${styles.iconButton} ${styles.searchDesktopAction} ${isSearchOpen ? styles.iconButtonActive : ''}`}
+                            onClick={() => {
+                                if (!isSearchOpen) {
+                                    setIsSearchOpen(true)
+                                    return
+                                }
+
+                                if (searchQuery.trim()) {
+                                    executeSearch(searchQuery)
+                                    return
+                                }
+
+                                setIsSearchOpen(false)
+                            }}
+                            aria-expanded={isSearchOpen}
                             aria-label="Search"
                         >
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -115,8 +264,10 @@ export default function Header() {
                         {/* Cart with Popup */}
                         <div className={styles.cartContainer} ref={cartRef}>
                             <button
-                                className={styles.iconButton}
+                                type="button"
+                                className={`${styles.iconButton} ${isOpen ? styles.iconButtonActive : ''}`}
                                 onClick={() => setIsOpen(!isOpen)}
+                                aria-expanded={isOpen}
                                 aria-label="Cart"
                             >
                                 <div className={styles.cartIconWrapper}>
@@ -193,10 +344,12 @@ export default function Header() {
                         </div>
 
                         {/* User Account with Dropdown */}
-                        <div className={styles.userContainer} ref={userMenuRef}>
+                        <div className={`${styles.userContainer} ${styles.accountDesktopAction}`} ref={userMenuRef}>
                             <button
-                                className={styles.iconButton}
+                                type="button"
+                                className={`${styles.iconButton} ${isUserMenuOpen ? styles.iconButtonActive : ''}`}
                                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                                aria-expanded={isUserMenuOpen}
                                 aria-label="Account"
                             >
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -218,7 +371,7 @@ export default function Header() {
                                             <Link href="/account/orders" className={styles.userMenuItem} onClick={() => setIsUserMenuOpen(false)}>
                                                 My Orders
                                             </Link>
-                                            <button className={styles.userMenuLogout} onClick={handleSignOut}>
+                                            <button type="button" className={styles.userMenuLogout} onClick={handleSignOut}>
                                                 Sign Out
                                             </button>
                                         </>
@@ -238,8 +391,10 @@ export default function Header() {
 
                         {/* Mobile Menu Toggle */}
                         <button
-                            className={styles.mobileToggle}
+                            type="button"
+                            className={`${styles.mobileToggle} ${mobileMenuOpen ? styles.mobileToggleActive : ''}`}
                             aria-expanded={mobileMenuOpen}
+                            aria-label="Toggle menu"
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         >
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -254,27 +409,36 @@ export default function Header() {
                 {/* Search Overlay */}
                 {isSearchOpen && (
                     <div className={styles.searchBarContainer}>
-                        <div className={styles.searchWrapper}>
+                        <form className={styles.searchWrapper} onSubmit={handleDesktopSearchSubmit}>
                             <input
                                 type="text"
                                 placeholder="Search..."
                                 className={styles.searchInput}
+                                value={searchQuery}
+                                onChange={(event) => setSearchQuery(event.target.value)}
                                 autoFocus
                             />
-                        </div>
+                        </form>
                     </div>
                 )}
             </div>
 
             {mobileMenuOpen && (
                 <div className={styles.mobileMenuOverlay} onClick={() => setMobileMenuOpen(false)}>
-                    <div className={styles.mobileMenu} onClick={(e) => e.stopPropagation()}>
+                    <div
+                        className={styles.mobileMenu}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Browse menu"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <div className={styles.mobileMenuHeader}>
                             <div>
                                 <div className={styles.mobileMenuTitle}>Browse</div>
                                 <div className={styles.mobileMenuSubtitle}>Quick access to every category</div>
                             </div>
                             <button
+                                type="button"
                                 className={styles.mobileClose}
                                 onClick={() => setMobileMenuOpen(false)}
                                 aria-label="Close menu"
@@ -283,26 +447,36 @@ export default function Header() {
                             </button>
                         </div>
 
-                        <div className={styles.mobileSearch}>
+                        <form className={styles.mobileSearch} onSubmit={handleMobileSearchSubmit}>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <circle cx="11" cy="11" r="8"></circle>
                                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                             </svg>
-                            <input type="text" placeholder="Search phones, watches, accessories" />
-                        </div>
+                            <input
+                                type="text"
+                                placeholder="Search phones, watches, accessories"
+                                value={mobileSearchQuery}
+                                onChange={(event) => setMobileSearchQuery(event.target.value)}
+                            />
+                        </form>
 
                         <div className={styles.mobileNavList}>
-                            {navItems.map((item) => (
-                                <Link
-                                    key={item.name}
-                                    href={item.href}
-                                    className={styles.mobileNavLink}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                >
-                                    <span>{item.name}</span>
-                                    <span className={styles.mobileNavArrow}>→</span>
-                                </Link>
-                            ))}
+                            {navItems.map((item) => {
+                                const isActive = isNavItemActive(item)
+
+                                return (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        className={`${styles.mobileNavLink} ${isActive ? styles.mobileNavLinkActive : ''}`}
+                                        aria-current={isActive ? 'page' : undefined}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        <span>{item.name}</span>
+                                        <span className={styles.mobileNavArrow}>→</span>
+                                    </Link>
+                                )
+                            })}
                         </div>
 
                         <div className={styles.mobileActions}>
@@ -316,6 +490,7 @@ export default function Header() {
                                         My Account
                                     </Link>
                                     <button
+                                        type="button"
                                         className={styles.mobileActionGhost}
                                         onClick={handleSignOut}
                                     >

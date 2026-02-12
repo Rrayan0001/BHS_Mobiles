@@ -52,7 +52,7 @@
 .imageWrapper {
     position: relative;
     width: 100%;
-    padding-top: 100%;
+    padding-top: 75%;
 }
 
 .imagePlaceholder {
@@ -200,7 +200,7 @@
 
 .savings {
     font-size: var(--font-size-base);
-    color: var(--color-success);
+    color: var(--color-neutral-700);
     font-weight: var(--font-weight-semibold);
 }
 

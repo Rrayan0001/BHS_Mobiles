@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import styles from './page.module.css'
@@ -27,12 +27,62 @@ const MapPinIcon = () => (
     </svg>
 )
 
+interface OrderItem {
+    id: string
+    product_title: string
+    price: number
+    quantity: number
+}
+
+interface Order {
+    id: string
+    order_number: string
+    status: string
+    total: number
+    created_at: string
+    order_items: OrderItem[]
+}
+
 export default function AccountOverviewPage() {
     const { user } = useAuth()
+    const [orders, setOrders] = useState<Order[]>([])
+    const [loading, setLoading] = useState(true)
 
     const userName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'User'
     const userEmail = user?.email || ''
     const userPhone = user?.user_metadata?.phone || 'Not provided'
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await fetch('/api/orders')
+                if (response.ok) {
+                    const data = await response.json()
+                    // When no order_number param, API returns array
+                    const ordersList = Array.isArray(data.orders) ? data.orders : []
+                    setOrders(ordersList)
+                }
+            } catch (error) {
+                console.error('Failed to fetch orders:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchOrders()
+    }, [])
+
+    const totalOrders = orders.length
+    const recentOrders = orders.slice(0, 3)
+
+    const getStatusStyle = (status: string) => {
+        switch (status) {
+            case 'delivered': return { background: '#dcfce7', color: '#166534' }
+            case 'shipped': return { background: '#dbeafe', color: '#1e40af' }
+            case 'pending': return { background: '#fef3c7', color: '#92400e' }
+            case 'cancelled': return { background: '#fee2e2', color: '#991b1b' }
+            default: return { background: '#f3f4f6', color: '#374151' }
+        }
+    }
 
     return (
         <div className={styles.page}>
@@ -45,7 +95,7 @@ export default function AccountOverviewPage() {
                     </div>
                     <div className={styles.statInfo}>
                         <span className={styles.statLabel}>Total Orders</span>
-                        <span className={styles.statValue}>0</span>
+                        <span className={styles.statValue}>{loading ? '...' : totalOrders}</span>
                     </div>
                 </div>
                 <div className={styles.statCard}>
@@ -71,19 +121,62 @@ export default function AccountOverviewPage() {
             <div className={styles.section}>
                 <div className={styles.sectionHeader}>
                     <h2>Recent Orders</h2>
-                    <Link href="/account/orders" className={styles.viewAll}>
-                        View All →
-                    </Link>
+                    {totalOrders > 0 && (
+                        <Link href="/account/orders" className={styles.viewAll}>
+                            View All →
+                        </Link>
+                    )}
                 </div>
 
                 <div className={styles.ordersList}>
-                    <div className={styles.emptyState}>
-                        <PackageIcon />
-                        <p>No orders yet</p>
-                        <Link href="/products" className={styles.shopLink}>
-                            Start Shopping →
-                        </Link>
-                    </div>
+                    {loading ? (
+                        <div className={styles.emptyState}>
+                            <p style={{ color: '#6b7280' }}>Loading orders...</p>
+                        </div>
+                    ) : recentOrders.length === 0 ? (
+                        <div className={styles.emptyState}>
+                            <PackageIcon />
+                            <p>No orders yet</p>
+                            <Link href="/products" className={styles.shopLink}>
+                                Start Shopping →
+                            </Link>
+                        </div>
+                    ) : (
+                        recentOrders.map((order) => (
+                            <div key={order.id} className={styles.orderCard} style={{
+                                padding: '1rem',
+                                border: '1px solid #e5e7eb',
+                                borderRadius: '12px',
+                                marginBottom: '0.75rem'
+                            }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                    <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>#{order.order_number}</span>
+                                    <span style={{
+                                        padding: '4px 10px',
+                                        borderRadius: '20px',
+                                        fontSize: '0.75rem',
+                                        fontWeight: 600,
+                                        textTransform: 'capitalize',
+                                        ...getStatusStyle(order.status)
+                                    }}>
+                                        {order.status}
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span style={{ color: '#6b7280', fontSize: '0.85rem' }}>
+                                        {new Date(order.created_at).toLocaleDateString('en-IN', {
+                                            day: 'numeric', month: 'short', year: 'numeric'
+                                        })}
+                                        {' · '}
+                                        {order.order_items?.length || 0} item{(order.order_items?.length || 0) !== 1 ? 's' : ''}
+                                    </span>
+                                    <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>
+                                        ₹{order.total.toLocaleString()}
+                                    </span>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
 
@@ -114,4 +207,3 @@ export default function AccountOverviewPage() {
         </div>
     )
 }
-

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import styles from './CategoryIcons.module.css'
 
@@ -37,9 +37,11 @@ const Icons = {
             <line x1="12" y1="6" x2="12" y2="6"></line>
         </svg>
     ),
-    Check: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="#00C853" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" width="48" height="48">
-            <polyline points="20 6 9 17 4 12"></polyline>
+    BoxPiece: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="48" height="48">
+            <path d="M12 2L3 7l9 5 9-5-9-5z"></path>
+            <path d="M3 7v10l9 5 9-5V7"></path>
+            <path d="M12 12v10"></path>
         </svg>
     ),
     Cover: (
@@ -65,15 +67,104 @@ const Icons = {
     )
 }
 
+interface CategoryRecord {
+    id: string
+    name: string
+    slug: string
+    display_name?: string | null
+}
+
+interface CategoryIconItem {
+    name: string
+    icon: React.ReactNode
+    special?: boolean
+    matchKeys: string[]
+}
+
+const normalizeKey = (value: string) => value.trim().toLowerCase()
+
 export default function CategoryIcons() {
-    const categories: { name: string; icon: any; slug: string; special?: boolean }[] = []
+    const [dbCategories, setDbCategories] = useState<CategoryRecord[]>([])
+
+    useEffect(() => {
+        let ignore = false
+        const controller = new AbortController()
+
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch('/api/categories?limit=100', {
+                    signal: controller.signal,
+                    cache: 'no-store',
+                })
+
+                if (!response.ok) return
+
+                const data: { categories?: CategoryRecord[] } = await response.json()
+                if (ignore) return
+
+                setDbCategories(Array.isArray(data.categories) ? data.categories : [])
+            } catch (error) {
+                if (error instanceof Error && error.name === 'AbortError') return
+                console.error('Failed to load category icons routing data:', error)
+            }
+        }
+
+        fetchCategories()
+
+        return () => {
+            ignore = true
+            controller.abort()
+        }
+    }, [])
+
+    const icons: CategoryIconItem[] = [
+        { name: 'iPhone', icon: Icons.iPhone, matchKeys: ['iphone', 'phones', 'smartphones'] },
+        { name: 'Apple Watch', icon: Icons.Watch, matchKeys: ['iwatch', 'watch', 'watches', 'wearables'] },
+        { name: 'AirPods', icon: Icons.Airpods, matchKeys: ['airpods', 'earbuds', 'wearables'] },
+        { name: 'Android', icon: Icons.Samsung, matchKeys: ['android', 'phones', 'smartphones'] },
+        { name: 'Google Pixel', icon: Icons.Pixel, matchKeys: ['android', 'google-pixel', 'smartphones'] },
+        { name: 'Box piece', icon: Icons.BoxPiece, special: true, matchKeys: [] },
+        { name: 'Covers', icon: Icons.Cover, matchKeys: ['covers', 'cover', 'accessories', 'back-skins'] },
+        { name: 'Chargers', icon: Icons.Charger, matchKeys: ['chargers', 'accessories'] },
+    ]
+
+    const categoryLookup = useMemo(() => {
+        const lookup = new Map<string, string>()
+
+        for (const category of dbCategories) {
+            const slugKey = normalizeKey(category.slug)
+            const nameKey = normalizeKey(category.name)
+
+            lookup.set(slugKey, category.slug)
+            lookup.set(nameKey, category.slug)
+        }
+
+        return lookup
+    }, [dbCategories])
+
+    const resolveHref = (item: CategoryIconItem) => {
+        for (const key of item.matchKeys) {
+            const slug = categoryLookup.get(normalizeKey(key))
+            if (slug) {
+                return `/shop/category/${slug}`
+            }
+        }
+
+        return '/products'
+    }
 
     return (
         <section className={styles.section}>
             <div className="container">
+                <div className={styles.header}>
+                    <h2 className={styles.title}>Shop by Category</h2>
+                    <Link href="/products" className={styles.viewAll}>
+                        View all products
+                    </Link>
+                </div>
                 <div className={styles.grid}>
-                    {categories.map((cat) => (
-                        <Link key={cat.name} href={cat.slug} className={styles.card}>
+                    {icons.map((cat) => (
+                        <Link key={cat.name} href={resolveHref(cat)} className={styles.card}>
                             <div className={`${styles.iconCircle} ${cat.special ? styles.specialCircle : ''}`}>
                                 <span className={styles.icon}>{cat.icon}</span>
                             </div>

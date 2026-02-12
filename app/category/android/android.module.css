@@ -4,7 +4,7 @@
 }
 
 .banner {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #000000;
     padding: 4rem 0 3rem;
     text-align: center;
     color: white;
@@ -15,11 +15,13 @@
     font-size: 3rem;
     margin-bottom: var(--spacing-2);
     font-weight: 400;
+    color: #ffffff;
 }
 
 .bannerSubtitle {
     font-size: 1.1rem;
-    opacity: 0.95;
+    color: #ffffff;
+    opacity: 0.9;
 }
 
 .filtersSection {

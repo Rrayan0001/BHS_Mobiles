@@ -1,89 +1,113 @@
 .page {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-6);
+    gap: 1rem;
+    color: #111111;
 }
 
 .title {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--spacing-4);
+    margin: 0;
+    font-size: 1.95rem;
+    line-height: 1.2;
+    font-family: var(--font-serif);
+    color: #111111;
+}
+
+.emptyState {
+    border: 2px solid #111111;
+    border-radius: 12px;
+    background: repeating-linear-gradient(
+        135deg,
+        #ffffff,
+        #ffffff 8px,
+        #f5f5f5 8px,
+        #f5f5f5 16px
+    );
+    padding: 1.25rem;
+    text-align: center;
 }
 
 .ordersList {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-4);
+    gap: 0.8rem;
 }
 
 .orderCard {
-    transition: transform var(--transition-fast);
+    border: 2px solid #111111;
+    border-radius: 12px;
+    background: #ffffff;
+    transition: transform 0.2s ease;
 }
 
 .orderCard:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: var(--spacing-4);
-    border-bottom: 1px solid var(--color-neutral-100);
-    margin-bottom: var(--spacing-4);
+    padding-bottom: 0.75rem;
+    border-bottom: 1px dashed #c7c7c7;
+    margin-bottom: 0.75rem;
 }
 
 .headerInfo {
     display: flex;
     flex-direction: column;
+    gap: 0.15rem;
 }
 
 .orderId {
-    font-weight: var(--font-weight-bold);
-    color: var(--color-neutral-900);
+    font-weight: 800;
+    color: #111111;
+    letter-spacing: 0.01em;
 }
 
 .orderDate {
-    font-size: var(--font-size-sm);
-    color: var(--color-neutral-500);
+    font-size: 0.8rem;
+    color: #4b5563;
 }
 
 .items {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--spacing-4);
-    margin-bottom: var(--spacing-4);
+    gap: 0.55rem;
+    margin-bottom: 0.75rem;
 }
 
 .item {
     display: flex;
     align-items: center;
-    gap: var(--spacing-3);
-    background: var(--color-neutral-50);
-    padding: var(--spacing-2) var(--spacing-4);
-    border-radius: var(--radius-md);
+    gap: 0.4rem;
+    border: 1px solid #111111;
+    background: #fafafa;
+    padding: 0.35rem 0.6rem;
+    border-radius: 999px;
 }
 
 .itemImageFallback {
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 26px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-white);
-    border-radius: var(--radius-sm);
-    font-size: var(--font-size-lg);
+    border-radius: 999px;
+    background: #111111;
+    color: #ffffff;
+    font-size: 0.8rem;
 }
 
 .itemName {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #1f2937;
 }
 
 .moreItems {
-    font-size: var(--font-size-sm);
-    color: var(--color-neutral-500);
+    font-size: 0.82rem;
+    color: #4b5563;
     align-self: center;
 }
 
@@ -91,8 +115,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: var(--spacing-4);
-    border-top: 1px solid var(--color-neutral-100);
+    gap: 0.6rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed #c7c7c7;
 }
 
 .total {
@@ -101,30 +126,38 @@
 }
 
 .total span {
-    font-size: var(--font-size-xs);
-    color: var(--color-neutral-500);
+    font-size: 0.72rem;
+    color: #4b5563;
     text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 .total strong {
-    font-size: var(--font-size-lg);
-    color: var(--color-neutral-900);
+    font-size: 1.1rem;
+    color: #111111;
 }
 
 .actions {
     display: flex;
-    gap: var(--spacing-3);
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 700px) {
+    .title {
+        font-size: 1.55rem;
+    }
+
     .footer {
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--spacing-4);
     }
 
     .actions {
         width: 100%;
-        justify-content: space-between;
+    }
+
+    .actions :global(a) {
+        width: 100%;
     }
 }

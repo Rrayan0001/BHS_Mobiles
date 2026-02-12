@@ -1,9 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import Button from '@/components/ui/Button'
-import Card from '@/components/ui/Card'
-import styles from '../categories/page.module.css'
+import styles from './page.module.css'
 
 interface Review {
     id: string
@@ -79,126 +77,133 @@ export default function ReviewsModerationPage() {
     }
 
     const renderStars = (rating: number) => {
-        return '⭐'.repeat(rating) + '☆'.repeat(5 - rating)
+        return '★'.repeat(rating) + '☆'.repeat(5 - rating)
     }
+
+    const getCardStyle = (status: string) => {
+        switch (status) {
+            case 'pending': return styles.reviewCardPending
+            case 'approved': return styles.reviewCardApproved
+            case 'rejected': return styles.reviewCardRejected
+            default: return ''
+        }
+    }
+
+    const getStatusStyle = (status: string) => {
+        switch (status) {
+            case 'pending': return styles.statusPending
+            case 'approved': return styles.statusApproved
+            case 'rejected': return styles.statusRejected
+            default: return ''
+        }
+    }
+
+    const filters = [
+        { label: 'Pending', value: 'pending' },
+        { label: 'Approved', value: 'approved' },
+        { label: 'Rejected', value: 'rejected' },
+        { label: 'All', value: 'all' },
+    ]
 
     return (
         <div className={styles.page}>
+            {/* Header */}
             <div className={styles.header}>
                 <div>
                     <h1 className={styles.title}>Product Reviews</h1>
-                    <p className={styles.subtitle}>Moderate customer reviews</p>
+                    <p className={styles.subtitle}>Moderate customer reviews and feedback</p>
                 </div>
             </div>
 
-            <Card padding="lg">
-                <div style={{ marginBottom: '16px', display: 'flex', gap: '8px' }}>
-                    <Button
-                        variant={filter === 'pending' ? 'primary' : 'secondary'}
-                        onClick={() => setFilter('pending')}
+            {/* Filter Tabs */}
+            <div className={styles.filterBar}>
+                {filters.map((f) => (
+                    <button
+                        key={f.value}
+                        className={`${styles.filterBtn} ${filter === f.value ? styles.filterBtnActive : ''}`}
+                        onClick={() => setFilter(f.value)}
                     >
-                        Pending
-                    </Button>
-                    <Button
-                        variant={filter === 'approved' ? 'primary' : 'secondary'}
-                        onClick={() => setFilter('approved')}
-                    >
-                        Approved
-                    </Button>
-                    <Button
-                        variant={filter === 'rejected' ? 'primary' : 'secondary'}
-                        onClick={() => setFilter('rejected')}
-                    >
-                        Rejected
-                    </Button>
-                    <Button
-                        variant={filter === 'all' ? 'primary' : 'secondary'}
-                        onClick={() => setFilter('all')}
-                    >
-                        All
-                    </Button>
-                </div>
+                        {f.label}
+                    </button>
+                ))}
+            </div>
 
-                {loading ? (
-                    <p>Loading reviews...</p>
-                ) : reviews.length === 0 ? (
-                    <p>No reviews found.</p>
-                ) : (
-                    <div style={{ display: 'grid', gap: '16px' }}>
-                        {reviews.map((review) => (
-                            <div key={review.id} style={{
-                                padding: '16px',
-                                border: '1px solid #ddd',
-                                borderRadius: '8px',
-                                backgroundColor:
-                                    review.status === 'approved' ? '#f0fdf4' :
-                                        review.status === 'rejected' ? '#fef2f2' : '#fefce8'
-                            }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                    <div>
-                                        <h3 style={{ margin: '0 0 4px 0' }}>{review.customer_name}</h3>
-                                        <div style={{ fontSize: '18px', marginBottom: '4px' }}>
-                                            {renderStars(review.rating)}
-                                        </div>
-                                        <p style={{ margin: '0', fontSize: '14px', color: '#666' }}>
-                                            Product: {review.product?.title || 'Unknown'}
-                                        </p>
-                                        <p style={{ margin: '4px 0', fontSize: '12px', color: '#888' }}>
-                                            {new Date(review.created_at).toLocaleDateString()}
-                                        </p>
+            {/* Content */}
+            {loading ? (
+                <div className={styles.loadingState}>Loading reviews...</div>
+            ) : reviews.length === 0 ? (
+                <div className={styles.emptyState}>
+                    <div className={styles.emptyIcon}>⭐</div>
+                    <p className={styles.emptyTitle}>No reviews found</p>
+                    <p className={styles.emptyText}>
+                        {filter === 'all'
+                            ? 'No reviews have been submitted yet.'
+                            : `No ${filter} reviews at this time.`}
+                    </p>
+                </div>
+            ) : (
+                <div className={styles.reviewsList}>
+                    {reviews.map((review) => (
+                        <div
+                            key={review.id}
+                            className={`${styles.reviewCard} ${getCardStyle(review.status)}`}
+                        >
+                            <div className={styles.reviewHeader}>
+                                <div className={styles.reviewMeta}>
+                                    <h3 className={styles.customerName}>{review.customer_name}</h3>
+                                    <div className={styles.stars}>
+                                        {renderStars(review.rating)}
                                     </div>
-                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                                        {review.status === 'pending' && (
-                                            <>
-                                                <Button
-                                                    variant="success"
-                                                    onClick={() => handleStatusChange(review.id, 'approved')}
-                                                    size="sm"
-                                                >
-                                                    ✓ Approve
-                                                </Button>
-                                                <Button
-                                                    variant="danger"
-                                                    onClick={() => handleStatusChange(review.id, 'rejected')}
-                                                    size="sm"
-                                                >
-                                                    ✗ Reject
-                                                </Button>
-                                            </>
-                                        )}
-                                        <button
-                                            onClick={() => handleDelete(review.id)}
-                                            className={styles.actionBtn}
-                                        >
-                                            🗑️
-                                        </button>
+                                    <p className={styles.productLabel}>
+                                        Product: <span className={styles.productLabelName}>{review.product?.title || 'Unknown'}</span>
+                                    </p>
+                                    <div className={styles.reviewDate}>
+                                        {new Date(review.created_at).toLocaleDateString('en-IN', {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric'
+                                        })}
                                     </div>
                                 </div>
-                                {review.review_text && (
-                                    <p style={{
-                                        margin: '8px 0 0 0',
-                                        padding: '12px',
-                                        backgroundColor: 'white',
-                                        borderRadius: '4px',
-                                        border: '1px solid #e5e7eb'
-                                    }}>
-                                        {review.review_text}
-                                    </p>
-                                )}
-                                <div style={{
-                                    marginTop: '8px',
-                                    fontSize: '12px',
-                                    fontWeight: 600,
-                                    color: review.status === 'approved' ? '#059669' :
-                                        review.status === 'rejected' ? '#dc2626' : '#ca8a04'
-                                }}>
-                                    Status: {review.status.toUpperCase()}
+                                <div className={styles.reviewActions}>
+                                    {review.status === 'pending' && (
+                                        <>
+                                            <button
+                                                className={styles.approveBtn}
+                                                onClick={() => handleStatusChange(review.id, 'approved')}
+                                            >
+                                                ✓ Approve
+                                            </button>
+                                            <button
+                                                className={styles.rejectBtn}
+                                                onClick={() => handleStatusChange(review.id, 'rejected')}
+                                            >
+                                                ✗ Reject
+                                            </button>
+                                        </>
+                                    )}
+                                    <button
+                                        className={styles.deleteBtn}
+                                        onClick={() => handleDelete(review.id)}
+                                    >
+                                        🗑️
+                                    </button>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                )}
-            </Card>
+
+                            {review.review_text && (
+                                <p className={styles.reviewText}>
+                                    {review.review_text}
+                                </p>
+                            )}
+
+                            <span className={`${styles.statusBadge} ${getStatusStyle(review.status)}`}>
+                                {review.status}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }

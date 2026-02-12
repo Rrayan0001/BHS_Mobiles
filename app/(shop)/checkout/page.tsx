@@ -10,10 +10,29 @@ import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import styles from './page.module.css'
 
+interface CheckoutAddress {
+    fullName: string
+    phone: string
+    address: string
+    city: string
+    state: string
+    pincode: string
+}
+
+const EMPTY_ADDRESS: CheckoutAddress = {
+    fullName: '',
+    phone: '',
+    address: '',
+    city: '',
+    state: '',
+    pincode: '',
+}
+
 export default function CheckoutPage() {
     const router = useRouter()
     const { user, isAuthenticated } = useAuth()
-    const { items: cartItems, subtotal, itemCount } = useCart()
+    const { items: cartItems, subtotal, itemCount, clearCart } = useCart()
+    const [placing, setPlacing] = useState(false)
     const [step, setStep] = useState<'shipping' | 'payment' | 'review'>('shipping')
 
     // Redirect if not authenticated
@@ -31,42 +50,133 @@ export default function CheckoutPage() {
     }, [itemCount, router])
 
     // Form state
-    const [email, setEmail] = useState(user?.email || '')
-    const [shippingAddress, setShippingAddress] = useState({
-        fullName: '',
-        phone: '',
-        address: '',
-        city: '',
-        state: '',
-        pincode: '',
-    })
-    const [billingAddress, setBillingAddress] = useState({
-        fullName: '',
-        phone: '',
-        address: '',
-        city: '',
-        state: '',
-        pincode: '',
-    })
+    const [shippingAddress, setShippingAddress] = useState<CheckoutAddress>(EMPTY_ADDRESS)
+    const [billingAddress, setBillingAddress] = useState<CheckoutAddress>(EMPTY_ADDRESS)
+    const [savedAddress, setSavedAddress] = useState<CheckoutAddress | null>(null)
+    const [loadingSavedAddress, setLoadingSavedAddress] = useState(true)
     const [sameAsShipping, setSameAsShipping] = useState(true)
     const [paymentMethod, setPaymentMethod] = useState<'cod' | 'online'>('online')
     const shipping = subtotal >= 50000 ? 0 : 200
     const tax = Math.round(subtotal * 0.18) // 18% GST
     const total = subtotal + shipping + tax
 
-    const handlePlaceOrder = async () => {
-        // TODO: Integrate with Supabase to create order
-        console.log('Order data:', {
-            email,
-            shippingAddress,
-            billingAddress: sameAsShipping ? shippingAddress : billingAddress,
-            paymentMethod,
-            items: cartItems,
-            total,
-        })
+    useEffect(() => {
+        if (!isAuthenticated || !user?.email) {
+            setLoadingSavedAddress(false)
+            return
+        }
 
-        // Redirect to success page
-        router.push('/checkout/success?order=ORD-' + Date.now())
+        let cancelled = false
+
+        const fetchSavedAddress = async () => {
+            setLoadingSavedAddress(true)
+            try {
+                const response = await fetch('/api/users/address')
+                if (!response.ok) return
+
+                const data = await response.json() as { address?: CheckoutAddress | null }
+                if (!data.address || cancelled) return
+
+                setSavedAddress(data.address)
+                setShippingAddress(data.address)
+                setBillingAddress(data.address)
+            } catch (error) {
+                console.error('Failed to fetch saved address:', error)
+            } finally {
+                if (!cancelled) {
+                    setLoadingSavedAddress(false)
+                }
+            }
+        }
+
+        fetchSavedAddress()
+
+        return () => {
+            cancelled = true
+        }
+    }, [isAuthenticated, user?.email])
+
+    const persistShippingAddress = async () => {
+        if (!isAuthenticated || !user?.email) {
+            return
+        }
+
+        try {
+            const response = await fetch('/api/users/address', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ address: shippingAddress })
+            })
+
+            if (response.ok) {
+                setSavedAddress(shippingAddress)
+            }
+        } catch (error) {
+            console.error('Failed to save address:', error)
+        }
+    }
+
+    const validateShipping = () => {
+        const { fullName, phone, address, city, state, pincode } = shippingAddress
+        if (!fullName.trim()) { alert('Full Name is required'); return false }
+        if (!phone.trim() || phone.replace(/[^0-9]/g, '').length < 10) { alert('Please enter a valid 10-digit phone number'); return false }
+        if (!address.trim()) { alert('Address is required'); return false }
+        if (!city.trim()) { alert('City is required'); return false }
+        if (!state.trim()) { alert('State is required'); return false }
+        if (!pincode.trim() || pincode.replace(/[^0-9]/g, '').length !== 6) { alert('Please enter a valid 6-digit pincode'); return false }
+        return true
+    }
+
+    const validateBilling = () => {
+        if (sameAsShipping) return true
+        const { fullName, phone, address, city, state, pincode } = billingAddress
+        if (!fullName.trim()) { alert('Billing Full Name is required'); return false }
+        if (!phone.trim() || phone.replace(/[^0-9]/g, '').length < 10) { alert('Please enter a valid billing phone number'); return false }
+        if (!address.trim()) { alert('Billing Address is required'); return false }
+        if (!city.trim()) { alert('Billing City is required'); return false }
+        if (!state.trim()) { alert('Billing State is required'); return false }
+        if (!pincode.trim() || pincode.replace(/[^0-9]/g, '').length !== 6) { alert('Please enter a valid billing pincode'); return false }
+        return true
+    }
+
+    const handlePlaceOrder = async () => {
+        if (!validateShipping()) {
+            setStep('shipping')
+            return
+        }
+        if (!validateBilling()) {
+            setStep('payment')
+            setSameAsShipping(false)
+            return
+        }
+
+        await persistShippingAddress()
+        setPlacing(true)
+        try {
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    shipping_address: shippingAddress,
+                    billing_address: sameAsShipping ? shippingAddress : billingAddress,
+                    payment_method: paymentMethod,
+                    items: cartItems,
+                }),
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to place order')
+            }
+
+            clearCart()
+            router.push(`/checkout/success?order=${data.order.order_number}`)
+        } catch (error: any) {
+            alert(error.message || 'Failed to place order. Please try again.')
+        } finally {
+            setPlacing(false)
+        }
     }
 
     return (
@@ -97,6 +207,33 @@ export default function CheckoutPage() {
                             <Card padding="lg">
                                 <h2 className={styles.sectionTitle}>Shipping Information</h2>
 
+                                {loadingSavedAddress ? (
+                                    <div className={styles.savedAddressLoading}>Checking saved delivery address...</div>
+                                ) : savedAddress ? (
+                                    <div className={styles.savedAddressBox}>
+                                        <div className={styles.savedAddressHeader}>
+                                            <span>Saved delivery address</span>
+                                            <button
+                                                type="button"
+                                                className={styles.savedAddressButton}
+                                                onClick={() => {
+                                                    setShippingAddress(savedAddress)
+                                                    if (sameAsShipping) {
+                                                        setBillingAddress(savedAddress)
+                                                    }
+                                                }}
+                                            >
+                                                Use this address
+                                            </button>
+                                        </div>
+                                        <p className={styles.savedAddressText}>
+                                            {savedAddress.fullName} | {savedAddress.phone}<br />
+                                            {savedAddress.address}<br />
+                                            {savedAddress.city}, {savedAddress.state} - {savedAddress.pincode}
+                                        </p>
+                                    </div>
+                                ) : null}
+
                                 <div className={styles.formGrid}>
                                     <Input
                                         label="Full Name"
@@ -104,6 +241,7 @@ export default function CheckoutPage() {
                                         value={shippingAddress.fullName}
                                         onChange={(e) => setShippingAddress({ ...shippingAddress, fullName: e.target.value })}
                                         fullWidth
+                                        required
                                     />
                                     <Input
                                         label="Phone Number"
@@ -112,6 +250,7 @@ export default function CheckoutPage() {
                                         value={shippingAddress.phone}
                                         onChange={(e) => setShippingAddress({ ...shippingAddress, phone: e.target.value })}
                                         fullWidth
+                                        required
                                     />
                                 </div>
 
@@ -121,6 +260,7 @@ export default function CheckoutPage() {
                                     value={shippingAddress.address}
                                     onChange={(e) => setShippingAddress({ ...shippingAddress, address: e.target.value })}
                                     fullWidth
+                                    required
                                 />
 
                                 <div className={styles.formGrid}>
@@ -130,6 +270,7 @@ export default function CheckoutPage() {
                                         value={shippingAddress.city}
                                         onChange={(e) => setShippingAddress({ ...shippingAddress, city: e.target.value })}
                                         fullWidth
+                                        required
                                     />
                                     <Input
                                         label="State"
@@ -137,6 +278,7 @@ export default function CheckoutPage() {
                                         value={shippingAddress.state}
                                         onChange={(e) => setShippingAddress({ ...shippingAddress, state: e.target.value })}
                                         fullWidth
+                                        required
                                     />
                                     <Input
                                         label="Pincode"
@@ -144,11 +286,19 @@ export default function CheckoutPage() {
                                         value={shippingAddress.pincode}
                                         onChange={(e) => setShippingAddress({ ...shippingAddress, pincode: e.target.value })}
                                         fullWidth
+                                        required
                                     />
                                 </div>
 
                                 <div className={styles.actions}>
-                                    <Button variant="primary" size="lg" onClick={() => setStep('payment')}>
+                                    <Button variant="primary" size="lg" onClick={async () => {
+                                        if (!validateShipping()) {
+                                            return
+                                        }
+
+                                        await persistShippingAddress()
+                                        setStep('payment')
+                                    }}>
                                         Continue to Payment
                                     </Button>
                                 </div>
@@ -212,6 +362,7 @@ export default function CheckoutPage() {
                                                     value={billingAddress.fullName}
                                                     onChange={(e) => setBillingAddress({ ...billingAddress, fullName: e.target.value })}
                                                     fullWidth
+                                                    required
                                                 />
                                                 <Input
                                                     label="Phone Number"
@@ -219,6 +370,7 @@ export default function CheckoutPage() {
                                                     value={billingAddress.phone}
                                                     onChange={(e) => setBillingAddress({ ...billingAddress, phone: e.target.value })}
                                                     fullWidth
+                                                    required
                                                 />
                                             </div>
                                             <Input
@@ -226,6 +378,7 @@ export default function CheckoutPage() {
                                                 value={billingAddress.address}
                                                 onChange={(e) => setBillingAddress({ ...billingAddress, address: e.target.value })}
                                                 fullWidth
+                                                required
                                             />
                                             <div className={styles.formGrid}>
                                                 <Input
@@ -233,18 +386,21 @@ export default function CheckoutPage() {
                                                     value={billingAddress.city}
                                                     onChange={(e) => setBillingAddress({ ...billingAddress, city: e.target.value })}
                                                     fullWidth
+                                                    required
                                                 />
                                                 <Input
                                                     label="State"
                                                     value={billingAddress.state}
                                                     onChange={(e) => setBillingAddress({ ...billingAddress, state: e.target.value })}
                                                     fullWidth
+                                                    required
                                                 />
                                                 <Input
                                                     label="Pincode"
                                                     value={billingAddress.pincode}
                                                     onChange={(e) => setBillingAddress({ ...billingAddress, pincode: e.target.value })}
                                                     fullWidth
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -286,8 +442,8 @@ export default function CheckoutPage() {
                                     <Button variant="outline" onClick={() => setStep('payment')}>
                                         Back
                                     </Button>
-                                    <Button variant="primary" size="lg" onClick={handlePlaceOrder}>
-                                        Place Order
+                                    <Button variant="primary" size="lg" onClick={handlePlaceOrder} disabled={placing}>
+                                        {placing ? 'Placing Order...' : 'Place Order'}
                                     </Button>
                                 </div>
                             </Card>

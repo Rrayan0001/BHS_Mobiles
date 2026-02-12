@@ -1,6 +1,8 @@
 'use client'
 
-import React, { createContext, useContext, useState, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { User, Session } from '@supabase/supabase-js'
 
 // Mock user type for frontend-only mode
 interface MockUser {
@@ -13,8 +15,8 @@ interface MockUser {
 }
 
 interface AuthContextType {
-    user: MockUser | null
-    session: unknown | null
+    user: User | MockUser | null
+    session: Session | unknown | null
     loading: boolean
     signUp: (email: string, password: string, name?: string, phone?: string) => Promise<{ error: string | null }>
     verifyOtp: (email: string, otp: string) => Promise<{ error: string | null }>
@@ -35,9 +37,43 @@ const isSupabaseConfigured = () => {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<MockUser | null>(null)
-    const [session, setSession] = useState<unknown | null>(null)
-    const [loading, setLoading] = useState(false)
+    const [user, setUser] = useState<User | MockUser | null>(null)
+    const [session, setSession] = useState<Session | unknown | null>(null)
+    const [loading, setLoading] = useState(true)
+    const supabase = createClient()
+
+    // Initialize session and listen for changes
+    useEffect(() => {
+        const initializeAuth = async () => {
+            if (isSupabaseConfigured()) {
+                try {
+                    // Get initial session
+                    const { data: { session: initialSession } } = await supabase.auth.getSession()
+                    setSession(initialSession)
+                    setUser(initialSession?.user ?? null)
+
+                    // Listen for auth changes
+                    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+                        async (_event, newSession) => {
+                            setSession(newSession)
+                            setUser(newSession?.user ?? null)
+                            setLoading(false)
+                        }
+                    )
+
+                    return () => subscription.unsubscribe()
+                } catch (error) {
+                    console.error('Error initializing auth:', error)
+                } finally {
+                    setLoading(false)
+                }
+            } else {
+                setLoading(false)
+            }
+        }
+
+        initializeAuth()
+    }, [])
 
     // For frontend showcase - mock auth functions
     const signUp = async (email: string, password: string, name?: string, phone?: string) => {

@@ -1,30 +1,43 @@
 .page {
-    padding-bottom: var(--spacing-16);
+    background: #ffffff;
+    color: #111111;
+    padding-bottom: 4rem;
 }
 
 .hero {
-    background: var(--color-neutral-900);
-    color: var(--color-white);
-    padding: var(--spacing-16) 0;
+    background:
+        repeating-linear-gradient(
+            -45deg,
+            #0f0f0f,
+            #0f0f0f 10px,
+            #1a1a1a 10px,
+            #1a1a1a 20px
+        );
+    color: #ffffff;
+    padding: 4rem 0 3rem;
+    border-bottom: 3px solid #111111;
     text-align: center;
-    margin-bottom: var(--spacing-12);
+    margin-bottom: 2.2rem;
 }
 
 .title {
-    font-size: var(--font-size-4xl);
-    font-weight: var(--font-weight-extrabold);
-    margin-bottom: var(--spacing-4);
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    font-family: var(--font-serif);
+    color: #ffffff;
 }
 
 .subtitle {
-    font-size: var(--font-size-xl);
-    color: var(--color-neutral-400);
+    margin: 0.7rem auto 0;
+    max-width: 42rem;
+    color: #e5e7eb;
+    font-size: 1rem;
 }
 
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-8);
+    gap: 1rem;
     align-items: start;
 }
 
@@ -36,118 +49,129 @@
 .infoGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-6);
+    gap: 0.85rem;
 }
 
 .infoCard {
-    text-align: center;
+    border: 2px solid #111111;
+    border-radius: 10px;
+    background:
+        linear-gradient(180deg, #ffffff 0%, #f8f8f8 100%);
+    text-align: left;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
 .icon {
-    font-size: 2.5rem;
-    margin-bottom: var(--spacing-4);
+    font-size: 1.4rem;
+    margin-bottom: 0.45rem;
 }
 
 .infoCard h3 {
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--spacing-2);
-    color: var(--color-neutral-900);
+    margin: 0 0 0.35rem;
+    font-size: 1rem;
+    color: #111111;
 }
 
 .infoCard p {
-    font-weight: var(--font-weight-medium);
-    color: var(--color-neutral-800);
-    margin-bottom: var(--spacing-1);
+    margin: 0.1rem 0;
+    font-size: 0.92rem;
+    color: #1f2937;
 }
 
 .infoCard .subText {
-    font-size: var(--font-size-xs);
-    color: var(--color-neutral-500);
-    font-weight: var(--font-weight-normal);
+    color: #4b5563;
+    font-size: 0.78rem;
 }
 
 .formColumn {
     position: sticky;
-    top: var(--spacing-8);
+    top: 1rem;
+}
+
+.formColumn :global(.card) {
+    border: 2px solid #111111;
+    border-radius: 10px;
+    background: #ffffff;
 }
 
 .form {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-5);
+    gap: 0.85rem;
 }
 
 .formTitle {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--spacing-4);
-    color: var(--color-neutral-900);
+    margin: 0;
+    color: #111111;
+    font-size: 1.35rem;
+    font-family: var(--font-serif);
 }
 
 .formGroup {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-2);
+    gap: 0.35rem;
 }
 
 .formGroup label {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    color: var(--color-neutral-700);
+    font-size: 0.82rem;
+    color: #111111;
+    font-weight: 700;
 }
 
 .textarea {
     width: 100%;
-    padding: var(--spacing-3);
-    border: 1px solid var(--color-neutral-300);
-    border-radius: var(--radius-md);
-    font-family: inherit;
-    font-size: var(--font-size-base);
+    border: 1px solid #111111;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #111111;
+    padding: 0.6rem 0.65rem;
+    font-family: var(--font-sans);
+    font-size: 0.92rem;
 }
 
 .textarea:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px var(--color-primary-light);
+    outline: 2px solid #111111;
+    outline-offset: 2px;
 }
 
 .successMessage {
     text-align: center;
-    padding: var(--spacing-10);
+    padding: 1.2rem 0.8rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-4);
+    gap: 0.65rem;
 }
 
 .successIcon {
-    font-size: 4rem;
-    margin-bottom: var(--spacing-4);
+    font-size: 2.2rem;
 }
 
 .successMessage h3 {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-success);
+    margin: 0;
+    color: #111111;
 }
 
 .successMessage p {
-    color: var(--color-neutral-600);
-    margin-bottom: var(--spacing-6);
+    margin: 0;
+    color: #374151;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 980px) {
     .grid {
         grid-template-columns: 1fr;
+    }
+
+    .formColumn {
+        position: static;
     }
 }
 
 @media (max-width: 640px) {
+    .hero {
+        padding: 3rem 0 2.3rem;
+    }
+
     .infoGrid {
         grid-template-columns: 1fr;
     }

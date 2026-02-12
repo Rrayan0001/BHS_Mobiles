@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
+import { useCart } from '@/contexts/CartContext'
 import styles from './page.module.css'
 
 // SVG Icons
@@ -53,19 +54,7 @@ const RefreshIcon = () => (
 export default function CartPage() {
     const router = useRouter()
     const { isAuthenticated } = useAuth()
-    const [cartItems, setCartItems] = useState<any[]>([])
-
-    const updateQuantity = (itemId: string, newQuantity: number) => {
-        setCartItems((items) =>
-            items.map((item) =>
-                item.id === itemId ? { ...item, quantity: Math.max(1, newQuantity) } : item
-            )
-        )
-    }
-
-    const removeItem = (itemId: string) => {
-        setCartItems((items) => items.filter((item) => item.id !== itemId))
-    }
+    const { items: cartItems, subtotal, itemCount, updateQuantity, removeItem } = useCart()
 
     const handleCheckout = () => {
         if (isAuthenticated) {
@@ -75,7 +64,6 @@ export default function CartPage() {
         }
     }
 
-    const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
     const shipping = subtotal > 0 ? (subtotal >= 50000 ? 0 : 200) : 0
     const total = subtotal + shipping
 
@@ -116,22 +104,22 @@ export default function CartPage() {
                                 <div className={styles.itemDetails}>
                                     <div className={styles.itemHeader}>
                                         <Link href={`/product/${item.id}`} className={styles.itemTitle}>
-                                            {item.title}
+                                            {item.name}
                                         </Link>
-                                        <span className={styles.gradeBadge}>
-                                            Grade {item.condition_grade}
-                                        </span>
+                                        {item.variant && (
+                                            <span className={styles.gradeBadge}>{item.variant}</span>
+                                        )}
                                     </div>
 
                                     <p className={styles.itemMeta}>
-                                        SKU: {item.sku} • {item.warranty_months} months warranty
+                                        {item.purchaseMode === 'single_unit' ? 'Single-unit item' : 'Multi-unit item'}
                                     </p>
 
                                     <div className={styles.itemFooter}>
                                         <div className={styles.quantityControl}>
                                             <button
                                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                                disabled={item.quantity <= 1}
+                                                disabled={item.quantity <= 1 || item.purchaseMode === 'single_unit'}
                                             >
                                                 −
                                             </button>
@@ -142,8 +130,13 @@ export default function CartPage() {
                                                     updateQuantity(item.id, parseInt(e.target.value) || 1)
                                                 }
                                                 min="1"
+                                                max={item.maxQuantity || undefined}
+                                                readOnly={item.purchaseMode === 'single_unit'}
                                             />
-                                            <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>
+                                            <button
+                                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                                disabled={item.purchaseMode === 'single_unit' || item.quantity >= (item.maxQuantity || item.quantity)}
+                                            >
                                                 +
                                             </button>
                                         </div>
@@ -175,7 +168,7 @@ export default function CartPage() {
                         <h2 className={styles.summaryTitle}>Order Summary</h2>
 
                         <div className={styles.summaryRow}>
-                            <span>Subtotal ({cartItems.length} items)</span>
+                            <span>Subtotal ({itemCount} items)</span>
                             <span>₹{subtotal.toLocaleString('en-IN')}</span>
                         </div>
 

@@ -55,7 +55,7 @@ export default function TopPicks() {
 
                 <div className={styles.grid}>
                     {products.map((product) => (
-                        <Link href={`/products/${product.slug}`} key={product.id}>
+                        <Link href={`/product/${product.slug}`} key={product.id}>
                             <Card className={styles.productCard} hover>
                                 <div className={styles.imageWrapper}>
                                     <img

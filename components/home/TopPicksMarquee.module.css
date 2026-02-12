@@ -1,51 +1,55 @@
 .section {
-    padding: var(--spacing-8) 0;
+    padding: 80px 0;
     background-color: var(--color-background);
+    overflow: hidden;
 }
 
 .headerRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--spacing-6);
+    margin-bottom: 40px;
+    padding: 0 var(--container-padding);
 }
 
 .title {
-    font-family: var(--font-serif);
-    font-size: 2.5rem;
-    color: var(--color-secondary);
+    font-size: 48px;
+    font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: -1px;
 }
 
 .navButtons {
     display: flex;
-    gap: var(--spacing-3);
+    gap: 12px;
 }
 
 .navBtn {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 1px solid #1a1a1a;
+    border: 1px solid #e5e7eb;
     background: white;
-    font-size: 1.5rem;
+    font-size: 20px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navBtn:hover {
+    border-color: #1a1a1a;
     background: #1a1a1a;
     color: white;
+    transform: scale(1.05);
 }
 
 .scrollContainer {
     display: flex;
-    gap: var(--spacing-6);
+    gap: 24px;
     overflow-x: auto;
-    padding: var(--spacing-4);
-
+    padding: 20px var(--container-padding);
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     cursor: grab;
@@ -59,40 +63,39 @@
     display: none;
 }
 
-/* Card Styling - Updated to match reference scale */
+/* Card Styling */
 .card {
-    min-width: 340px;
-    /* Wider card */
-    width: 340px;
-    height: 520px;
-    /* Taller card */
-    border: 2.5px solid #0a1f44;
-    /* Dark Navy border like image */
-    border-radius: 40px;
-    /* Very rounded corners */
+    min-width: 320px;
+    width: 320px;
+    height: 500px;
+    border: 2px solid #0f172a;
+    /* Navy border */
+    border-radius: 32px;
     overflow: hidden;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     background-color: white;
-    transition: transform 0.2s;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
     user-select: none;
     position: relative;
+    text-decoration: none;
 }
 
 .card:hover {
     transform: translateY(-8px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
 }
 
 .cardTop {
-    height: 300px;
-    /* Larger image area */
+    height: 280px;
     background-color: white;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-6);
+    padding: 24px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 .imagePlaceholder {
@@ -101,180 +104,141 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ccc;
-    /* When real images are used, ensure object-fit: contain */
+    color: #94a3b8;
 }
 
-/* Ribbon Style Badge */
+.imagePlaceholder img {
+    transition: transform 0.5s ease;
+}
+
+.card:hover .imagePlaceholder img {
+    transform: scale(1.05);
+}
+
+/* Discount Badge */
 .discountBadge {
     position: absolute;
-    top: 30px;
+    top: 24px;
     left: 0;
-    background-color: #ff0000;
+    background-color: #ef4444;
     color: white;
     font-weight: 700;
-    font-size: 0.9rem;
-    padding: 8px 16px 8px 12px;
+    font-size: 13px;
+    padding: 6px 14px 6px 14px;
     z-index: 10;
-    /* Ribbon tail effect */
-    clip-path: polygon(0 0, 100% 0, 85% 50%, 100% 100%, 0 100%);
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    clip-path: polygon(0 0, 100% 0, 92% 50%, 100% 100%, 0 100%);
+    box-shadow: 2px 2px 8px rgba(239, 68, 68, 0.2);
+    letter-spacing: 0.5px;
 }
 
 .cardBottom {
     flex: 1;
-    padding: var(--spacing-6) var(--spacing-4);
+    padding: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-2);
     text-align: center;
     justify-content: space-between;
-    border-top: none;
+    background: #f8fafc;
+    /* Fallback */
 }
 
 .productName {
-    font-family: var(--font-sans);
-    font-size: 1.15rem;
+    font-size: 18px;
     font-weight: 700;
-    color: #0a1f44;
-    /* Match border color */
-    line-height: 1.3;
-    margin-bottom: var(--spacing-2);
+    color: #0f172a;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .pricing {
     display: flex;
-    gap: var(--spacing-3);
+    gap: 12px;
     align-items: baseline;
-    margin-bottom: var(--spacing-2);
+    margin-bottom: 16px;
 }
 
 .currentPrice {
     font-weight: 800;
-    font-size: 1.25rem;
-    color: #0a1f44;
+    font-size: 22px;
+    color: #0f172a;
 }
 
 .oldPrice {
     text-decoration: line-through;
-    color: #8898aa;
-    font-size: 1rem;
+    color: #64748b;
+    font-size: 15px;
     font-weight: 500;
-}
-
-.addToCartBtn {
-    background-color: white;
-    border: 2.5px solid #000;
-    border-radius: 50px;
-    padding: 12px 32px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: max-content;
-    /* Button shouldn't stretch */
-    margin-top: auto;
-    color: #000;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
-    /* Subtle depth */
-}
-
-.addToCartBtn:hover {
-    background-color: #000;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.1);
-}
-
-.addToCartBtn:active {
-    transform: translateY(0);
-    box-shadow: none;
 }
 
 .viewDetailsBtn {
     background-color: white;
-    border: 2.5px solid #000;
-    border-radius: 50px;
-    padding: 12px 32px;
+    border: 2px solid #0f172a;
+    border-radius: 100px;
+    padding: 10px 24px;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 14px;
     cursor: pointer;
     transition: all 0.2s;
     width: max-content;
+    color: #0f172a;
     margin-top: auto;
-    color: #000;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
 }
 
 .card:hover .viewDetailsBtn {
-    background-color: #000;
+    background-color: #0f172a;
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
 }
 
 /* Mobile Optimization */
 @media (max-width: 768px) {
+    .section {
+        padding: 40px 0;
+    }
+
     .headerRow {
-        flex-direction: row;
-        align-items: center;
-        padding: 0 var(--spacing-4);
+        margin-bottom: 24px;
     }
 
     .title {
-        font-size: 1.8rem;
-    }
-
-    .navBtn {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1rem;
-    }
-
-    .scrollContainer {
-        padding-left: var(--spacing-4);
-    }
-
-    .card {
-        min-width: 280px;
-        width: 280px;
-        height: 440px;
-        border-radius: 30px;
-    }
-
-    .cardTop {
-        height: 240px;
-    }
-
-    .productName {
-        font-size: 1rem;
-    }
-}
-
-@media (max-width: 560px) {
-    .section {
-        padding: var(--spacing-6) 0;
-    }
-
-    .scrollContainer {
-        gap: var(--spacing-4);
-        padding-left: var(--spacing-3);
-    }
-
-    .card {
-        min-width: 240px;
-        width: 240px;
-        height: 380px;
-        border-radius: 26px;
-        border-width: 2px;
-    }
-
-    .cardTop {
-        height: 200px;
+        font-size: 28px;
     }
 
     .navButtons {
         display: none;
+        /* Hide nav buttons on mobile as scroll is intuitive */
+    }
+
+    .scrollContainer {
+        gap: 16px;
+        padding-bottom: 24px;
+        /* Space for shadow */
+    }
+
+    .card {
+        min-width: 260px;
+        width: 260px;
+        height: 420px;
+        border-radius: 24px;
+    }
+
+    .cardTop {
+        height: 220px;
+        padding: 16px;
+    }
+
+    .productName {
+        font-size: 16px;
+    }
+
+    .currentPrice {
+        font-size: 18px;
     }
 }

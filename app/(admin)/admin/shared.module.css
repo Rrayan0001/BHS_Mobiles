@@ -361,7 +361,61 @@
         font-size: 11px;
     }
 
+
     .emptyState {
         padding: 40px 16px;
+    }
+
+
+    .statusBadge {
+        padding: 3px 8px;
+        font-size: 11px;
+    }
+
+    .tableCard {
+        border-radius: 8px;
+    }
+
+    .price {
+        font-size: 13px;
+    }
+
+    .stock {
+        font-size: 13px;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+    .page {
+        padding: 12px;
+    }
+
+    .title {
+        font-size: 20px;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px 6px;
+    }
+
+    .table {
+        font-size: 12px;
+    }
+
+    .productImage {
+        width: 32px;
+        height: 32px;
+    }
+
+    .productName {
+        max-width: 90px;
+        font-size: 12px;
+    }
+
+    .actionBtn {
+        width: 26px;
+        height: 26px;
     }
 }
